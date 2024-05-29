@@ -1,0 +1,12 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "terminal.integrated.commandsToSkipShell": [
+    "-workbench.action.terminal.focusFind"
+  ],
+  "files.associations": {
+    "iosfwd": "cpp",
+    "limits": "cpp"
+  },
+}

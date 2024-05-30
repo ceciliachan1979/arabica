@@ -9,3 +9,4 @@ fi
 
 $dir_vcpkg/vcpkg install fmt
 $dir_vcpkg/vcpkg install sdl2
+$dir_vcpkg/vcpkg install gtest

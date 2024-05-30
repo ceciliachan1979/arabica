@@ -19,7 +19,6 @@ ContinuationIndentWidth: 2
 SpaceAfterTemplateKeyword: false
 SortIncludes: false
 AlignConsecutiveAssignments: true
-AlignOperands: true
 AllowShortEnumsOnASingleLine: false
 AlignConsecutiveMacros: AcrossEmptyLines
 AlignEscapedNewlines: Left

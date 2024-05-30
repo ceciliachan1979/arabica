@@ -12,8 +12,9 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 
 project(${project_name})
 
-find_package(fmt  CONFIG REQUIRED)
-find_package(SDL2 CONFIG REQUIRED)
+find_package(fmt   CONFIG REQUIRED)
+find_package(SDL2  CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}")
 
@@ -44,6 +45,10 @@ IF(BUILD_TEST)
   add_executable(test_${project_name}.out ${src_test})
   target_compile_options(test_${project_name}.out PRIVATE -g)
   target_compile_options(test_${project_name}.out PRIVATE -O0)
-  target_link_libraries(test_${project_name}.out PUBLIC ${dir_emulator})
+  target_link_libraries(test_${project_name}.out PUBLIC ${dir_emulator}
+                                                        GTest::gtest 
+                                                        GTest::gtest_main 
+                                                        GTest::gmock 
+                                                        GTest::gmock_main)
 ENDIF(BUILD_TEST)
 

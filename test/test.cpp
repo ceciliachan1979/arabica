@@ -1,12 +1,8 @@
-#include <fmt/core.h>
-#include <arabica/cpu/cpu.hpp>
-#include <arabica/memory/memory.hpp>
+#include <test/cpu/cpu_test_suite.hpp>
 
-int main(void) {
-  init_cpu();
-  write_memory(0x200, 0x61);
-  write_memory(0x200, 0x00);
-  run_cpu();
-  // TODO: Verify something
-  return 0;
+#include <gtest/gtest.h>
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

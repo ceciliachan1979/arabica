@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-
 #define MEMORY_SIZE 2048
 
 typedef uint16_t address_t;

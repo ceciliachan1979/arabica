@@ -5,6 +5,8 @@
 
 #include <gtest/gtest.h>
 
+namespace arabica {
+
 void test_cpu(void) {
   init_cpu();
   write_memory(0x200, 0x61);
@@ -13,7 +15,9 @@ void test_cpu(void) {
   // TODO: Verify something
 }
 
+} // namespace arabica
+
 TEST(test_cpu, AssertionTrue) {
-  test_cpu();
+  arabica::test_cpu();
   ASSERT_TRUE(true);
 }

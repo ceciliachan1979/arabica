@@ -1,0 +1,39 @@
+name: CI
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  ci-ubuntu:
+    name: Build on Linux (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lukka/get-cmake@latest
+      - name: install dependencies
+        run: ./vcpkg.sh
+      - name: build
+        run: make build
+      - name: build
+        run: make test
+
+  ci-mac:
+    name: Build on MacOS
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lukka/get-cmake@latest
+      - name: install dependencies
+        run: ./vcpkg.sh
+      - name: build
+        run: make build
+      - name: build
+        run: make test
+  fmt:
+    name: Formatting Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Run clang-format"
+        uses: jidicula/clang-format-action@v4.13.0
+        with:
+          clang-format-version: '18'

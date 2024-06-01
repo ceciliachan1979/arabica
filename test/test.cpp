@@ -1,6 +1,5 @@
 #include <test/cpu/cpu_test_suite.hpp>
-
-#include <gtest/gtest.h>
+#include <test/memory/memory_test_suite.hpp>
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

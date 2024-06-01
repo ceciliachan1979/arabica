@@ -1,7 +1,10 @@
 #pragma once
 
-namespace arabica {
+#include <arabica/cpu/cpu.hpp>
+#include <arabica/memory/memory.hpp>
+#include <gtest/gtest.h>
 
-void test_cpu(void);
-
-}
+class cpu_test_suite : public ::testing::Test {
+public:
+  static void test_run(void);
+};

@@ -18,6 +18,9 @@ public:
   Memory();
   ~Memory();
 
+  Memory(Memory&&)            = default;
+  Memory& operator=(Memory&&) = default;
+
   value_t read(const address_t address) const;
   void write(const address_t address, value_t value);
 

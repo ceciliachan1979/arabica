@@ -20,6 +20,9 @@ public:
   CPU()  = default;
   ~CPU() = default;
 
+  CPU(CPU&&)            = default;
+  CPU& operator=(CPU&&) = default;
+
   void run(const Memory& memory);
 
   uint16_t pc{PC_START};

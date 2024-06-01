@@ -1,4 +1,5 @@
 #include <arabica/memory/memory.hpp>
+#include <stdexcept>
 
 namespace arabica {
 
@@ -13,36 +14,30 @@ Memory::~Memory() {
 Memory::value_t Memory::read(const address_t address) const {
   if (is_valid(address)) {
     return _cell[address];
-  } else {
-    // ToDo: raise interrupt?
   }
-  return 0;
+  throw std::out_of_range("Invalid memory address accessed");
 }
 
 void Memory::write(const address_t address, value_t value) {
   if (is_valid(address)) {
     _cell[address] = value;
   } else {
-    // ToDo: raise interrupt?
+    throw std::out_of_range("Invalid memory address accessed");
   }
 }
 
 Memory::value_t& Memory::operator[](const address_t address) {
   if (is_valid(address)) {
     return _cell[address];
-  } else {
-    // ToDo: raise interrupt?
   }
-  return _cell[0]; // ToDo: raise interrupt?
+  throw std::out_of_range("Invalid memory address accessed");
 }
 
 const Memory::value_t& Memory::operator[](const address_t address) const {
   if (is_valid(address)) {
     return _cell[address];
-  } else {
-    // ToDo: raise interrupt?
   }
-  return _cell[0]; // ToDo: raise interrupt?
+  throw std::out_of_range("Invalid memory address accessed");
 }
 
 void Memory::clear_cell() {

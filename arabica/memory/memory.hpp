@@ -3,10 +3,11 @@
 #include <cstdint>
 #include <cstddef>
 #include <array>
+#include <arabica/type/noncopyable.hpp>
 
 namespace arabica {
 
-class Memory {
+class Memory : public noncopyable {
 public:
   using address_t = uint16_t;
   using value_t   = uint8_t;

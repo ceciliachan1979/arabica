@@ -1,13 +1,15 @@
 #pragma once
 
 #include <cstdint>
+#include <arabica/type/noncopyable.hpp>
 #include <arabica/memory/memory.hpp>
 
 namespace arabica {
 
-class CPU {
+class CPU : public noncopyable {
 public:
   enum class OP_CODE : uint16_t {
+    NONE      = 0x0000,
     JP_addr   = 0x1000,
     CALL_addr = 0x2000,
   };
@@ -15,18 +17,15 @@ public:
   constexpr static uint16_t REGISTER_COUNT = 16;
   constexpr static uint16_t PC_START       = 0x200;
 
-  CPU();
-  ~CPU();
+  CPU()  = default;
+  ~CPU() = default;
 
   void run(const Memory& memory);
 
-  uint16_t pc;
-  uint8_t registers[REGISTER_COUNT];
-  uint16_t opcode;
-  OP_CODE instruction;
-
-private:
-  void reset();
+  uint16_t pc{PC_START};
+  uint8_t registers[REGISTER_COUNT] = {0};
+  uint16_t opcode{0};
+  OP_CODE instruction{OP_CODE::NONE};
 };
 
 } // namespace arabica

@@ -3,7 +3,7 @@
 namespace arabica {
 
 class noncopyable {
-public:
+protected:
   noncopyable() = default;
 
   noncopyable(const noncopyable&)    = delete;

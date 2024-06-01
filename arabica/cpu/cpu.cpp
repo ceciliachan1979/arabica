@@ -15,7 +15,7 @@ void CPU::run(const Memory& memory) {
       // ToDo
     } break;
     default: {
-      fmt::print("Unknown opcode: 0x%X\n", opcode);
+      fmt::print("Unknown opcode: 0x{:X}\n", opcode);
     } break;
   }
 }

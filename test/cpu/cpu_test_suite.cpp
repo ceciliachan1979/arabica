@@ -1,23 +1,19 @@
 #include <test/cpu/cpu_test_suite.hpp>
 
-#include <arabica/cpu/cpu.hpp>
-#include <arabica/memory/memory.hpp>
+void cpu_test_suite::test_run(void) {
+  arabica::CPU cpu;
+  arabica::Memory memory;
 
-#include <gtest/gtest.h>
+  memory.write(0x200, 0x61);
+  memory.write(0x200, 0x00);
 
-namespace arabica {
+  cpu.run(memory);
 
-void test_cpu(void) {
-  init_cpu();
-  write_memory(0x200, 0x61);
-  write_memory(0x200, 0x00);
-  run_cpu();
   // TODO: Verify something
+
+  ASSERT_TRUE(true);
 }
 
-} // namespace arabica
-
-TEST(test_cpu, AssertionTrue) {
-  arabica::test_cpu();
-  ASSERT_TRUE(true);
+TEST_F(cpu_test_suite, run_case_001) {
+  cpu_test_suite::test_run();
 }

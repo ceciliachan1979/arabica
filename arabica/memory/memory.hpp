@@ -1,11 +1,33 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
+#include <cstddef>
+#include <array>
 
-#define MEMORY_SIZE 2048
+namespace arabica {
 
-typedef uint16_t address_t;
-/**
- *
- */
-void write_memory(address_t address, uint8_t value);
+class Memory {
+public:
+  using address_t = uint16_t;
+  using value_t   = uint8_t;
+
+  constexpr static uint16_t SIZE     = 4096;
+  constexpr static uint16_t RESERVED = (0x1FF - 0x000) + 1;
+
+  Memory();
+  ~Memory();
+
+  value_t read(const address_t address) const;
+  void write(const address_t address, value_t value);
+
+  value_t& operator[](const address_t address);
+  const value_t& operator[](const address_t address) const;
+
+private:
+  void clear_cell();
+  bool is_valid(const address_t address) const;
+
+  std::array<value_t, SIZE> _cell;
+};
+
+} // namespace arabica

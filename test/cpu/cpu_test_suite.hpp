@@ -6,5 +6,5 @@
 
 class cpu_test_suite : public ::testing::Test {
 public:
-  static void test_run(void);
+  static void test_jump(void);
 };

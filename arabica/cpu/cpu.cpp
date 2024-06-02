@@ -9,7 +9,8 @@ void CPU::run(const Memory& memory) {
 
   switch (instruction) {
     case OP_CODE::JP_addr: {
-      // ToDo
+      uint16_t target = opcode & 0x0FFF;
+      pc              = target;
     } break;
     case OP_CODE::CALL_addr: {
       // ToDo

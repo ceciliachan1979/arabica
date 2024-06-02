@@ -13,7 +13,9 @@ void CPU::run(const Memory& memory) {
       pc              = target;
     } break;
     case OP_CODE::CALL_addr: {
-      // ToDo
+      stack.push(pc + 2);
+      uint16_t target = instruction & 0x0FFF;
+      pc              = target;
     } break;
     default: {
       fmt::print("Unknown opcode: 0x{:X}\n", static_cast<uint16_t>(opcode));

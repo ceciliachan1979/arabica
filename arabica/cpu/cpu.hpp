@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <stack>
 #include <arabica/type/noncopyable.hpp>
 #include <arabica/memory/memory.hpp>
 
@@ -29,6 +30,7 @@ public:
   uint8_t registers[REGISTER_COUNT] = {0};
   uint16_t instruction{0};
   OP_CODE opcode{OP_CODE::NONE};
+  std::stack<uint16_t> stack;
 };
 
 } // namespace arabica

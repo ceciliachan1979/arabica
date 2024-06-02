@@ -24,7 +24,10 @@ void cpu_test_suite::test_call(void) {
   ASSERT_EQ(cpu.stack.top(), 0x202);
 }
 
-TEST_F(cpu_test_suite, run_control_flow_tests) {
+TEST_F(cpu_test_suite, test_jump) {
   cpu_test_suite::test_jump();
+}
+
+TEST_F(cpu_test_suite, test_call) {
   cpu_test_suite::test_call();
 }

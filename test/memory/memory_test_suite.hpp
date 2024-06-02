@@ -10,21 +10,13 @@ void write_and_assert(const arabica::Memory::address_t address, const arabica::M
   ASSERT_EQ(memory.read(address), value);
 }
 
-#define arabica_memory_test(test_case, content) \
-  TEST(memory_test_suite, test_case) {          \
-    arabica::CPU cpu;                           \
-    content                                     \
+#define arabica_memory_test(test_case, address, value) \
+  TEST(memory_test_suite, test_case) {                 \
+    arabica::CPU cpu;                                  \
+    write_and_assert(address, value);                  \
   }
 // clang-format off
 
-arabica_memory_test(pc_test_case_001,
-  write_and_assert(cpu.pc, 0x61);
-)
-
-arabica_memory_test(pc_test_case_002,
-  write_and_assert(cpu.pc, 0x00);
-)
-
-arabica_memory_test(address_write_test_case_001,
-  write_and_assert(0x300, 0x11);
-)
+arabica_memory_test(pc_test_case_001, cpu.pc, 0x61);
+arabica_memory_test(pc_test_case_002, cpu.pc, 0x00);
+arabica_memory_test(write_test_case_001, 0x300, 0x11);

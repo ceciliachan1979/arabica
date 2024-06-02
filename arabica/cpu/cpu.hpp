@@ -27,8 +27,8 @@ public:
 
   uint16_t pc{PC_START};
   uint8_t registers[REGISTER_COUNT] = {0};
-  uint16_t opcode{0};
-  OP_CODE instruction{OP_CODE::NONE};
+  uint16_t instruction{0};
+  OP_CODE opcode{OP_CODE::NONE};
 };
 
 } // namespace arabica

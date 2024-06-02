@@ -4,19 +4,19 @@
 namespace arabica {
 
 void CPU::run(const Memory& memory) {
-  opcode      = memory[pc] << 8 | memory[pc + 1];
-  instruction = static_cast<OP_CODE>(opcode & 0xF000);
+  instruction = memory[pc] << 8 | memory[pc + 1];
+  opcode      = static_cast<OP_CODE>(instruction & 0xF000);
 
-  switch (instruction) {
+  switch (opcode) {
     case OP_CODE::JP_addr: {
-      uint16_t target = opcode & 0x0FFF;
+      uint16_t target = instruction & 0x0FFF;
       pc              = target;
     } break;
     case OP_CODE::CALL_addr: {
       // ToDo
     } break;
     default: {
-      fmt::print("Unknown opcode: 0x{:X}\n", opcode);
+      fmt::print("Unknown opcode: 0x{:X}\n", static_cast<uint16_t>(opcode));
     } break;
   }
 }

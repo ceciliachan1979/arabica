@@ -27,7 +27,6 @@ public:
   uint8_t              reg_delay{DEFAULT_RATE_HZ};
   uint8_t              reg_sound{DEFAULT_RATE_HZ};
   uint16_t             pc{PC_START};
-  uint8_t              sp{0x00};
   std::stack<uint16_t> stack;
   uint16_t             instruction{0x0000};
   OP_CODE              opcode{OP_CODE::CLS};

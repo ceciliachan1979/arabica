@@ -9,6 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: lukka/get-cmake@latest
+      - name: install SDL2
+        run: sudo apt update -y && sudo apt install -y libsdl2-dev
       - name: install dependencies
         run: ./vcpkg.sh
       - name: build

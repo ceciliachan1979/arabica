@@ -24,7 +24,7 @@ public:
   value_t& read(const address_t address);
   const value_t& read(const address_t address) const;
 
-  void write(const address_t address, value_t value);
+  void write(const address_t address, const value_t value);
 
   value_t& operator[](const address_t address);
   const value_t& operator[](const address_t address) const;

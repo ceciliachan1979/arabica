@@ -21,7 +21,7 @@ const Memory::value_t& Memory::read(const address_t address) const {
   return _cell[address];
 }
 
-void Memory::write(const address_t address, value_t value) {
+void Memory::write(const address_t address, const value_t value) {
   is_valid(address);
   _cell[address] = value;
 }

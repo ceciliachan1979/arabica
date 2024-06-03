@@ -6,7 +6,6 @@ namespace arabica {
 
 // spec: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 enum class OP_CODE : uint16_t {
-  NONE             = 0x0000,
   CLS              = 0x00E0, // 00E0
   RET              = 0x00EE, // 00EE
   SYS_addr         = 0x0000, // 0nnn

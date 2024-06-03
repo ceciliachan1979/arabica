@@ -24,7 +24,7 @@ public:
   uint16_t pc{PC_START};
   uint8_t registers[REGISTER_COUNT] = {0};
   uint16_t instruction{0};
-  OP_CODE opcode{OP_CODE::NONE};
+  OP_CODE opcode{OP_CODE::CLS};
   std::stack<uint16_t> stack;
 };
 

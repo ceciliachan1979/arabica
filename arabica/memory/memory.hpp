@@ -7,7 +7,7 @@
 
 namespace arabica {
 
-// spec: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#memmap
+// source: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#memmap
 //
 // +---------------+= 0xFFF (4095) End of Chip-8 RAM
 // |               |

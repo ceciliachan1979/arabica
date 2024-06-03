@@ -19,8 +19,8 @@ private:
 
   bool _running = false;
 
-  SDL_Event _event;
-  SDL_Window* _window     = nullptr;
+  SDL_Event     _event;
+  SDL_Window*   _window   = nullptr;
   SDL_Renderer* _renderer = nullptr;
 };
 

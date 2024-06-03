@@ -6,7 +6,7 @@
 
 #define arabica_cpu_test(test_case, content) \
   TEST(cpu_test_suite, test_case) {          \
-    arabica::CPU cpu;                        \
+    arabica::CPU    cpu;                     \
     arabica::Memory memory;                  \
     content                                  \
   }

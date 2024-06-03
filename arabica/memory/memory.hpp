@@ -46,12 +46,12 @@ public:
   Memory(Memory&&)            = default;
   Memory& operator=(Memory&&) = default;
 
-  value_t& read(const address_t address);
+  value_t&       read(const address_t address);
   const value_t& read(const address_t address) const;
 
   void write(const address_t address, const value_t value);
 
-  value_t& operator[](const address_t address);
+  value_t&       operator[](const address_t address);
   const value_t& operator[](const address_t address) const;
 
 private:

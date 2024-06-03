@@ -21,10 +21,10 @@ public:
 
   void run(const Memory& memory);
 
-  uint16_t pc{PC_START};
-  uint8_t registers[REGISTER_COUNT] = {0};
-  uint16_t instruction{0};
-  OP_CODE opcode{OP_CODE::CLS};
+  uint16_t             pc{PC_START};
+  uint8_t              registers[REGISTER_COUNT] = {0};
+  uint16_t             instruction{0};
+  OP_CODE              opcode{OP_CODE::CLS};
   std::stack<uint16_t> stack;
 };
 

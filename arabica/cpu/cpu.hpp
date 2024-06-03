@@ -25,7 +25,7 @@ public:
   uint8_t              registers[REGISTER_COUNT] = {0};
   uint16_t             reg_I{0x0000};
   uint8_t              reg_delay{DEFAULT_RATE_HZ};
-  uint8_t              reg_sound{60};
+  uint8_t              reg_sound{DEFAULT_RATE_HZ};
   uint16_t             pc{PC_START};
   uint8_t              sp{0x00};
   std::stack<uint16_t> stack;

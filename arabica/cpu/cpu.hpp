@@ -3,18 +3,13 @@
 #include <cstdint>
 #include <stack>
 #include <arabica/type/noncopyable.hpp>
+#include <arabica/cpu/op_code.hpp>
 #include <arabica/memory/memory.hpp>
 
 namespace arabica {
 
 class CPU : public noncopyable {
 public:
-  enum class OP_CODE : uint16_t {
-    NONE      = 0x0000,
-    JP_addr   = 0x1000,
-    CALL_addr = 0x2000,
-  };
-
   constexpr static uint16_t REGISTER_COUNT = 16;
   constexpr static uint16_t PC_START       = 0x200;
 

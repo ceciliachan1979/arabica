@@ -4,11 +4,11 @@
 #include <arabica/memory/memory.hpp>
 #include <gtest/gtest.h>
 
-#define arabica_cpu_test(test_case, content) \
-  TEST(cpu_test_suite, test_case) {          \
-    arabica::CPU    cpu;                     \
-    arabica::Memory memory;                  \
-    content                                  \
+#define arabica_cpu_test(test_case_name, test_case_body) \
+  TEST(cpu_test_suite, test_case_name) {                 \
+    arabica::CPU    cpu;                                 \
+    arabica::Memory memory;                              \
+    test_case_body                                       \
   }
 // clang-format off
 

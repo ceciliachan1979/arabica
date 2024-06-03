@@ -2,14 +2,17 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <arabica/type/noncopyable.hpp>
 
 namespace arabica {
 
-class Window {
-
+class Window : public noncopyable {
 public:
   Window(const std::string& title, const int width, const int height);
   ~Window();
+
+  Window(Window&&)            = default;
+  Window& operator=(Window&&) = default;
 
   void execute();
 

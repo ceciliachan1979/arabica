@@ -10,8 +10,9 @@ namespace arabica {
 
 class CPU : public noncopyable {
 public:
-  constexpr static uint16_t REGISTER_COUNT = 16;
-  constexpr static uint16_t PC_START       = 0x0200;
+  constexpr static uint16_t REGISTER_COUNT  = 16;
+  constexpr static uint16_t PC_START        = 0x0200;
+  constexpr static uint16_t DEFAULT_RATE_HZ = 60;
 
   CPU()  = default;
   ~CPU() = default;
@@ -23,7 +24,7 @@ public:
 
   uint8_t              registers[REGISTER_COUNT] = {0};
   uint16_t             reg_I{0x0000};
-  uint8_t              reg_delay{60};
+  uint8_t              reg_delay{DEFAULT_RATE_HZ};
   uint8_t              reg_sound{60};
   uint16_t             pc{PC_START};
   uint8_t              sp{0x00};

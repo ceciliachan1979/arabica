@@ -11,7 +11,7 @@ namespace arabica {
 class CPU : public noncopyable {
 public:
   constexpr static uint16_t REGISTER_COUNT = 16;
-  constexpr static uint16_t PC_START       = 0x200;
+  constexpr static uint16_t PC_START       = 0x0200;
 
   CPU()  = default;
   ~CPU() = default;
@@ -21,11 +21,15 @@ public:
 
   void run(const Memory& memory);
 
-  uint16_t             pc{PC_START};
   uint8_t              registers[REGISTER_COUNT] = {0};
-  uint16_t             instruction{0};
-  OP_CODE              opcode{OP_CODE::CLS};
+  uint16_t             reg_I{0x0000};
+  uint8_t              reg_delay{60};
+  uint8_t              reg_sound{60};
+  uint16_t             pc{PC_START};
+  uint8_t              sp{0x00};
   std::stack<uint16_t> stack;
+  uint16_t             instruction{0x0000};
+  OP_CODE              opcode{OP_CODE::CLS};
 };
 
 } // namespace arabica

@@ -16,14 +16,14 @@ void CPU::run(const Memory& memory) {
     case 0x0: {
       switch (instruction & 0x00FF) {
         case 0xEE: opcode = OP_CODE::RET; break;
-        default:; break;
+        default: break;
       }
     } break;
     case 0x8000: {
       switch (instruction & 0x000F) {
         case 0x0: opcode = OP_CODE::LD_Vx_Vy; break;
         case 0x4: opcode = OP_CODE::ADD_Vx_Vy; break;
-        default:; break;
+        default: break;
       }
     } break;
     default: break;

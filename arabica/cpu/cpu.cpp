@@ -24,6 +24,7 @@ void CPU::run(const Memory& memory) {
       switch (instruction & 0x000F) {
         case 0x0: opcode = OP_CODE::LD_Vx_Vy; break;
         case 0x4: opcode = OP_CODE::ADD_Vx_Vy; break;
+        default:; break;
       }
     } break;
     default: break;

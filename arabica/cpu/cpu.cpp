@@ -10,12 +10,11 @@ inline static constexpr void advance_pc(uint16_t& pc, uint16_t offset = 2) {
 void CPU::run(const Memory& memory) {
   instruction     = memory[pc] << 8 | memory[pc + 1];
   uint16_t prefix = instruction & 0xF000;
-  uint16_t suffix = instruction & 0x00FF;
   opcode          = static_cast<OP_CODE>(prefix);
 
   switch (prefix) {
     case 0x0: {
-      switch (suffix) {
+      switch (instruction & 0x00FF) {
         case 0xEE: opcode = OP_CODE::RET; break;
         default:; break;
       }

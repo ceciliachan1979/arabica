@@ -107,6 +107,81 @@ arabica_cpu_test(test_ld_vx_vy,
   }
 )
 
+arabica_cpu_test(test_or_vx_vy,
+   // LD V[0], 0x12
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x12);
+
+
+  // LD V[1], 0x34
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x34);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[1], 0x34);
+
+
+  // OR V[0], V[1]
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x11);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0x36);
+)
+
+arabica_cpu_test(test_and_vx_vy,
+  // LD V[0], 0x12
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x12);
+
+
+  // LD V[1], 0x34
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x34);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[1], 0x34);
+
+
+  // AND V[0], V[1]
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0x10);
+)
+
+arabica_cpu_test(test_xor_vx_vy,
+   // LD V[0], 0x12
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x12);
+
+
+  // LD V[1], 0x34
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x34);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[1], 0x34);
+
+
+  // XOR V[0], V[1]
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x13);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0x26);
+)
+
 arabica_cpu_test(test_add_vx_vy,
   // LD V[0], 0x1 
   memory.write(0x200, 0x60);

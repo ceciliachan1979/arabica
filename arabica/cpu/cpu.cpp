@@ -22,6 +22,9 @@ void CPU::run(const Memory& memory) {
     case 0x8000: {
       switch (instruction & 0x000F) {
         case 0x0: opcode = OP_CODE::LD_Vx_Vy; break;
+        case 0x1: opcode = OP_CODE::OR_Vx_Vy; break;
+        case 0x2: opcode = OP_CODE::AND_Vx_Vy; break;
+        case 0x3: opcode = OP_CODE::XOR_Vx_Vy; break;
         case 0x4: opcode = OP_CODE::ADD_Vx_Vy; break;
         default: break;
       }
@@ -64,6 +67,27 @@ void CPU::run(const Memory& memory) {
       uint8_t x    = (instruction & 0x0F00) >> 8;
       uint8_t y    = (instruction & 0x00F0) >> 4;
       registers[x] = registers[y];
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::OR_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+      registers[x] |= registers[y];
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::AND_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+      registers[x] &= registers[y];
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::XOR_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+      registers[x] ^= registers[y];
 
       advance_pc(pc);
     } break;

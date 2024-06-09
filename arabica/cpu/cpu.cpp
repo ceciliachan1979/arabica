@@ -26,6 +26,10 @@ void CPU::run(const Memory& memory) {
         case 0x2: opcode = OP_CODE::AND_Vx_Vy; break;
         case 0x3: opcode = OP_CODE::XOR_Vx_Vy; break;
         case 0x4: opcode = OP_CODE::ADD_Vx_Vy; break;
+        case 0x5: opcode = OP_CODE::SUB_Vx_Vy; break;
+        case 0x6: opcode = OP_CODE::SHR_Vx; break;
+        case 0x7: opcode = OP_CODE::SUBN_Vx_Vy; break;
+        case 0xE: opcode = OP_CODE::SHL_Vx; break;
         default: break;
       }
     } break;
@@ -96,6 +100,45 @@ void CPU::run(const Memory& memory) {
       uint8_t y      = (instruction & 0x00F0) >> 4;
       registers[x]   = registers[x] + registers[y];
       registers[0xF] = registers[y] > 255 - registers[x];
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::SUB_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+
+      registers[0xF] = registers[x] > registers[y];
+      registers[x]   = registers[x] - registers[y];
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::SHR_Vx: {
+      // Remark: historically, the semantics is "right shift V[x] by V[y] amount
+      // and store the result to V[x]" in the original chip8 implementation, however, most of the game
+      // after 90s follows the buggy implementation of HP which ignoring V[y], so we just follow the same for now.
+
+      uint8_t x      = (instruction & 0x0F00) >> 8;
+      registers[0xF] = registers[x] & 1;
+      registers[x]   = registers[x] >> 1;
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::SUBN_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+
+      registers[0xF] = registers[y] > registers[x];
+      registers[x]   = registers[y] - registers[x];
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::SHL_Vx: {
+      // Remark: historically, the semantics is "left shift V[x] by V[y] amount
+      // and store the result to V[x]" in the original chip8 implementation, however, most of the game
+      // after 90s follows the buggy implementation of HP which ignoring V[y], so we just follow the same for now.
+      uint8_t x      = (instruction & 0x0F00) >> 8;
+      registers[0xF] = (registers[x] >> 7) & 1;
+      registers[x]   = registers[x] << 1;
 
       advance_pc(pc);
     } break;

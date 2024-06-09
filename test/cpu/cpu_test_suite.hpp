@@ -219,3 +219,194 @@ arabica_cpu_test(test_add_vx_vy,
   ASSERT_EQ(cpu.registers[0], 0x1);
   ASSERT_EQ(cpu.registers[0xF], 1);
 )
+
+arabica_cpu_test(test_sub_vx_vy,
+  // LD V[0], 0x1 
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+  // LD V[1], 0x2
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x02);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[1], 0x2);
+
+  // SUB V[0], V[1], expected V[0] = 0xFF
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x15);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0xff);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+
+  // LD V[0], 0x2
+  memory.write(0x206, 0x60);
+  memory.write(0x207, 0x02);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x208);
+  ASSERT_EQ(cpu.registers[0], 0x2);
+
+  // LD V[1], 0x1
+  memory.write(0x208, 0x61);
+  memory.write(0x209, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20A);
+  ASSERT_EQ(cpu.registers[1], 0x1);
+
+  // SUB V[0], V[1], expected V[0] = 0x00
+  memory.write(0x20A, 0x80);
+  memory.write(0x20B, 0x15);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20C);
+  ASSERT_EQ(cpu.registers[0], 0x01);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+)
+
+arabica_cpu_test(test_shr_vx,
+  // LD V[0], 0xF
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x0f);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0xF);
+
+  // SHR V[0], expected V[0] = 0x7
+  memory.write(0x202, 0x80);
+  memory.write(0x203, 0x06);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[0], 0x7);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+
+  // SHR V[0], expected V[0] = 0x3
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x06);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0x3);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+
+  // SHR V[0], expected V[0] = 0x1
+  memory.write(0x206, 0x80);
+  memory.write(0x207, 0x06);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x208);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+
+  // SHR V[0], expected V[0] = 0x0
+  memory.write(0x208, 0x80);
+  memory.write(0x209, 0x06);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20A);
+  ASSERT_EQ(cpu.registers[0], 0x0);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+
+  // SHR V[0], expected V[0] = 0x0
+  memory.write(0x20A, 0x80);
+  memory.write(0x20B, 0x06);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20C);
+  ASSERT_EQ(cpu.registers[0], 0x0);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+)
+
+
+arabica_cpu_test(test_subn_vx_vy,
+  // LD V[0], 0x2
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x02);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x2);
+
+  // LD V[1], 0x1
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[1], 0x1);
+
+  // SUBN V[0], V[1], expected V[0] = 0xFF
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x17);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0xff);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+
+  // LD V[0], 0x1
+  memory.write(0x206, 0x60);
+  memory.write(0x207, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x208);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+  // LD V[1], 0x2
+  memory.write(0x208, 0x61);
+  memory.write(0x209, 0x02);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20A);
+  ASSERT_EQ(cpu.registers[1], 0x2);
+
+  // SUBN V[0], V[1], expected V[0] = 0x01
+  memory.write(0x20A, 0x80);
+  memory.write(0x20B, 0x17);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20C);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+)
+
+arabica_cpu_test(test_shl_vx,
+  // LD V[0], 0xF
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x0f);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0xF);
+
+  // SHL V[0], expected V[0] = 0x1E
+  memory.write(0x202, 0x80);
+  memory.write(0x203, 0x0E);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[0], 0x1E);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+
+  // SHL V[0], expected V[0] = 0x3C
+  memory.write(0x204, 0x80);
+  memory.write(0x205, 0x0E);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+  ASSERT_EQ(cpu.registers[0], 0x3C);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+
+  // SHL V[0], expected V[0] = 0x78
+  memory.write(0x206, 0x80);
+  memory.write(0x207, 0x0E);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x208);
+  ASSERT_EQ(cpu.registers[0], 0x78);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+
+  // SHL V[0], expected V[0] = 0xF0
+  memory.write(0x208, 0x80);
+  memory.write(0x209, 0x0E);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20A);
+  ASSERT_EQ(cpu.registers[0], 0xF0);
+  ASSERT_EQ(cpu.registers[0xF], 0);
+
+  // SHL V[0], expected V[0] = 0xE0
+  memory.write(0x20A, 0x80);
+  memory.write(0x20B, 0x0E);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x20C);
+  ASSERT_EQ(cpu.registers[0], 0xE0);
+  ASSERT_EQ(cpu.registers[0xF], 1);
+)

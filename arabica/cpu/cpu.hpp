@@ -12,7 +12,7 @@ class CPU : public noncopyable {
 public:
   constexpr static uint16_t REGISTER_COUNT  = 16;
   constexpr static uint16_t PC_START        = 0x0200;
-  constexpr static uint16_t DEFAULT_RATE_HZ = 60;
+  constexpr static uint8_t  DEFAULT_RATE_HZ = 60;
 
   CPU()  = default;
   ~CPU() = default;

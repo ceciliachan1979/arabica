@@ -1,10 +1,22 @@
+#include "arabica/cpu/op_code.hpp"
 #include <arabica/cpu/cpu.hpp>
+#include <cstdint>
+#include <cstdlib>
 #include <fmt/core.h>
+#include <random>
 
 namespace arabica {
 
 inline static constexpr void advance_pc(uint16_t& pc, uint16_t offset = 2) {
   pc += offset;
+}
+
+template<typename T>
+inline T random(T range_from, T range_to) {
+  std::random_device               rand_dev;
+  std::mt19937                     generator(rand_dev());
+  std::uniform_int_distribution<T> distr(range_from, range_to);
+  return distr(generator);
 }
 
 void CPU::run(const Memory& memory) {
@@ -33,6 +45,19 @@ void CPU::run(const Memory& memory) {
         default: break;
       }
     } break;
+    case 0xF000: {
+      switch (instruction & 0x00FF) {
+        case 0x07: opcode = OP_CODE::LD_Vx_DT; break;
+        case 0x0A: opcode = OP_CODE::LD_Vx_K; break;
+        case 0x15: opcode = OP_CODE::LD_DT_Vx; break;
+        case 0x18: opcode = OP_CODE::LD_ST_Vx; break;
+        case 0x1E: opcode = OP_CODE::ADD_I_Vx; break;
+        case 0x29: opcode = OP_CODE::LD_F_Vx; break;
+        case 0x33: opcode = OP_CODE::LD_B_Vx; break;
+        case 0x55: opcode = OP_CODE::LD_I_Vx; break;
+        case 0x65: opcode = OP_CODE::LD_Vx_I; break;
+      }
+    }
     default: break;
   }
 
@@ -53,6 +78,34 @@ void CPU::run(const Memory& memory) {
       } else {
         // ToDo: raise interrupt? how to test the failed case?
       };
+    } break;
+    case OP_CODE::SE_Vx_byte: {
+      uint8_t x      = (instruction & 0x0F00) >> 8;
+      uint8_t byte_v = instruction & 0x00FF;
+      if (registers[x] == byte_v)
+        advance_pc(pc);
+
+      advance_pc(pc);
+
+    } break;
+    case OP_CODE::SNE_Vx_byte: {
+      uint8_t x      = (instruction & 0x0F00) >> 8;
+      uint8_t byte_v = instruction & 0x00FF;
+
+      if (registers[x] != byte_v)
+        advance_pc(pc);
+
+      advance_pc(pc);
+
+    } break;
+    case OP_CODE::SE_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+
+      if (registers[x] == registers[y])
+        advance_pc(pc);
+
+      advance_pc(pc);
     } break;
     case OP_CODE::LD_Vx_byte: {
       uint8_t byte_v                         = instruction & 0x00FF;
@@ -140,6 +193,52 @@ void CPU::run(const Memory& memory) {
       registers[0xF] = (registers[x] >> 7) & 1;
       registers[x]   = registers[x] << 1;
 
+      advance_pc(pc);
+    } break;
+    case OP_CODE::SNE_Vx_Vy: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      uint8_t y = (instruction & 0x00F0) >> 4;
+      if (registers[x] != registers[y])
+        advance_pc(pc);
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::LD_I_addr: {
+      uint16_t data = (instruction & 0x0FFF);
+      reg_I         = data;
+    } break;
+    case OP_CODE::JP_V0_addr: {
+      uint16_t base_address = (instruction & 0x0FFF);
+      pc                    = base_address;
+      advance_pc(pc, registers[0]);
+    } break;
+    case OP_CODE::RND_Vx_byte: {
+      uint8_t x         = (instruction & 0x0F00) >> 8;
+      uint8_t kk        = (instruction & 0x00FF);
+      uint8_t rand_byte = random(0, 255);
+
+      registers[x] = rand_byte & kk;
+
+      advance_pc(pc);
+    } break;
+    case OP_CODE::LD_Vx_DT: {
+      uint8_t x    = (instruction & 0x0F00) >> 8;
+      registers[x] = reg_delay;
+      advance_pc(pc);
+    } break;
+    case OP_CODE::LD_DT_Vx: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      reg_delay = registers[x];
+      advance_pc(pc);
+    } break;
+    case OP_CODE::LD_ST_Vx: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      reg_sound = registers[x];
+      advance_pc(pc);
+    } break;
+    case OP_CODE::ADD_I_Vx: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      reg_I     = reg_I + registers[x];
       advance_pc(pc);
     } break;
     default: {

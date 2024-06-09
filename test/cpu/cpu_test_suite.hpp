@@ -1,7 +1,10 @@
 #pragma once
 
+#include <algorithm>
 #include <arabica/cpu/cpu.hpp>
 #include <arabica/memory/memory.hpp>
+#include <array>
+#include <cstdint>
 #include <gtest/gtest.h>
 
 #define arabica_cpu_test(test_case_name, test_case_body) \
@@ -40,16 +43,57 @@ arabica_cpu_test(test_ret,
   ASSERT_EQ(cpu.stack.size(), 0);
 )
 
-arabica_cpu_test(test_ld_vx_byte, 
-  for(uint8_t i = 0; i < 15; i++)
-  {
-    memory.write(0x200 + 2 * i , 0x60 + i);
-    memory.write(0x200 + 2 * i + 1, i);
-    cpu.run(memory);
+arabica_cpu_test(test_se_vx_byte, 
+  // LD V[0], 0x12
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x12);
 
-    ASSERT_EQ(cpu.pc, 0x200 + 2 * i + 2);
-    ASSERT_EQ(cpu.registers[i], i);
-  }
+  // SE V[0], 0x12
+  memory.write(0x202, 0x30);
+  memory.write(0x203, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+)
+
+
+arabica_cpu_test(test_sne_vx_byte,
+  // LD V[0], 0x12
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x12);
+
+  // SNE V[0], 0x01
+  memory.write(0x202, 0x40);
+  memory.write(0x203, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x206);
+)
+
+arabica_cpu_test(test_se_vx_vy,
+  // LD V[0], 0x12
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x12);
+
+  // LD V[0], 0x12
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x12);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[0], 0x12);
+
+  // SE V[0], V[1]
+  memory.write(0x204, 0x50);
+  memory.write(0x205, 0x10);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x208);
 )
 
 arabica_cpu_test(test_add_vx_byte,
@@ -402,4 +446,117 @@ arabica_cpu_test(test_shl_vx,
   ASSERT_EQ(cpu.pc, 0x20C);
   ASSERT_EQ(cpu.registers[0], 0xE0);
   ASSERT_EQ(cpu.registers[0xF], 1);
+)
+
+arabica_cpu_test(test_sne_vx_vy,
+  // LD V[0], 0x1
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+ // LD V[0], 0x2
+  memory.write(0x202, 0x61);
+  memory.write(0x203, 0x02);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[1], 0x2);
+
+
+  // SNE V[0], V[1], expected the pc = 0x208
+  memory.write(0x204, 0x90);
+  memory.write(0x205, 0x10);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x208);
+)
+
+arabica_cpu_test(test_ld_i_addr,
+  // LD I, 0x123
+  memory.write(0x200, 0xA1);
+  memory.write(0x201, 0x23);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.reg_I, 0x0123);
+)
+
+arabica_cpu_test(test_jp_v0_addr,
+  // LD V[0], 0x1
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+  // JP V[0], 0x300
+  memory.write(0x202, 0xB3);
+  memory.write(0x203, 0x00);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x301);
+)
+
+arabica_cpu_test(test_rnd_vx_byte,
+  uint8_t key = 0xff;
+  bool tested[256]{false};
+  std::size_t N = 256 * 100;
+
+  for(int i = 0; i < N; i++)
+  {
+    memory.write(0x200, 0xC0);
+    memory.write(0x201, 0xff);
+    cpu.run(memory);
+    ASSERT_TRUE(cpu.registers[0] >= 0 && cpu.registers[0] <= 255);
+
+    tested[cpu.registers[0]] = true;
+    cpu.pc = 0x200;
+  }
+
+  ASSERT_TRUE(std::all_of(std::begin(tested), std::end(tested), [](bool f) { return f;}));
+)
+
+arabica_cpu_test(test_ld_vx_dt,
+  // LD V[0], 0x1
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+  // LD V[0], DT
+  memory.write(0x202, 0xF0);
+  memory.write(0x203, 0x07);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.registers[0], arabica::CPU::DEFAULT_RATE_HZ);
+)
+
+arabica_cpu_test(test_ld_dt_vx,
+  // LD V[0], 0x1
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+  // LD DT, V[0]
+  memory.write(0x202, 0xF0);
+  memory.write(0x203, 0x15);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.reg_delay, 0x1);
+)
+
+arabica_cpu_test(test_ld_st_vx,
+  // LD V[0], 0x1
+  memory.write(0x200, 0x60);
+  memory.write(0x201, 0x01);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x202);
+  ASSERT_EQ(cpu.registers[0], 0x1);
+
+  // LD ST, V[0]
+  memory.write(0x202, 0xF0);
+  memory.write(0x203, 0x18);
+  cpu.run(memory);
+  ASSERT_EQ(cpu.pc, 0x204);
+  ASSERT_EQ(cpu.reg_sound, 0x1);
 )

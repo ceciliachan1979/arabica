@@ -3,8 +3,12 @@
 
 namespace arabica {
 
+Uint32 _ontick(Uint32 interval, void* userdata) {
+  return (static_cast<Window*>(userdata))->ontick(interval, userdata);
+}
+
 Window::Window(const std::string& title, const int width, const int height) {
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
     fmt::print("SDL could not initialize! SDL_Error: {}\n", SDL_GetError());
     std::exit(1);
   }
@@ -25,6 +29,8 @@ Window::Window(const std::string& title, const int width, const int height) {
     fmt::print("Renderer could not be created! SDL_Error: {}\n", SDL_GetError());
     std::exit(1);
   }
+
+  SDL_AddTimer(2, _ontick, this);
 }
 
 Window::~Window() {
@@ -69,6 +75,23 @@ void Window::on_render() {
   SDL_RenderClear(_renderer);
   SDL_SetRenderDrawColor(_renderer, 0x33, 0x99, 0x66, 0xFF);
   SDL_RenderPresent(_renderer);
+}
+
+Uint32 Window::ontick(Uint32 interval, void* userdata) {
+  //
+  // TODO: Implementation
+  //
+  // Note, this happens on a separate thread
+  //
+  // 1. Check if there were any keystroke (which could happen on the UI thread at the same time, synchronization
+  //    required), if so, tell the CPU that's the case
+  // 2. Execute a batch of CPU instructions (Potentially just one)
+  // 3. Check if there are update to display, if so, tell SDL to redraw (how - remember this is a separate thread)
+  // 4. Handles any other CPU/Window interactions.
+  //
+  // This design should work even if this is executed on the UI thread, but this is not the case for SDL.
+  //
+  return interval;
 }
 
 } // namespace arabica

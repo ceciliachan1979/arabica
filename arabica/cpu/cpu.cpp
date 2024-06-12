@@ -1,9 +1,8 @@
-#include "arabica/cpu/op_code.hpp"
 #include <arabica/cpu/cpu.hpp>
 #include <cstdint>
 #include <cstdlib>
-#include <fmt/core.h>
 #include <random>
+#include <fmt/core.h>
 
 namespace arabica {
 
@@ -19,7 +18,16 @@ inline T random(T range_from, T range_to) {
   return distr(generator);
 }
 
+void CPU::reset() {
+  pc = PC_START;
+}
+
 void CPU::run(const Memory& memory) {
+  Keypad keypad;
+  run(memory, keypad);
+}
+
+void CPU::run(const Memory& memory, const Keypad& keypad) {
   instruction     = memory[pc] << 8 | memory[pc + 1];
   uint16_t prefix = instruction & 0xF000;
   opcode          = static_cast<OP_CODE>(prefix);
@@ -56,8 +64,9 @@ void CPU::run(const Memory& memory) {
         case 0x33: opcode = OP_CODE::LD_B_Vx; break;
         case 0x55: opcode = OP_CODE::LD_I_Vx; break;
         case 0x65: opcode = OP_CODE::LD_Vx_I; break;
+        default: break;
       }
-    }
+    } break;
     default: break;
   }
 
@@ -241,8 +250,18 @@ void CPU::run(const Memory& memory) {
       reg_I     = reg_I + registers[x];
       advance_pc(pc);
     } break;
+    case OP_CODE::LD_Vx_K: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      if (keypad.keydown_code != -1) {
+        fmt::print("[cpu log] pressed key is {}\n", keypad.keydown_code);
+        registers[x]        = keypad.keydown_code;
+        keypad.keydown_code = -1;
+        fmt::print("[cpu log] reg{} is {}\n", x, registers[x]);
+        advance_pc(pc);
+      }
+    } break;
     default: {
-      fmt::print("Unknown opcode: 0x{:X}\n", static_cast<uint16_t>(opcode));
+      // fmt::print("Unknown opcode: 0x{:X}\n", static_cast<uint16_t>(opcode));
     } break;
   }
 }

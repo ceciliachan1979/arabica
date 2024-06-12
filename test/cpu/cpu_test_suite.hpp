@@ -1,11 +1,11 @@
 #pragma once
 
-#include <algorithm>
 #include <arabica/cpu/cpu.hpp>
 #include <arabica/memory/memory.hpp>
-#include <array>
-#include <cstdint>
 #include <gtest/gtest.h>
+#include <cstdint>
+#include <algorithm>
+#include <array>
 
 #define arabica_cpu_test(test_case_name, test_case_body) \
   TEST(cpu_test_suite, test_case_name) {                 \

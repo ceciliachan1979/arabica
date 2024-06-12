@@ -4,10 +4,8 @@
 
 namespace arabica {
 
-class display : public noncopyable {
+class Display : public noncopyable {
 public:
-  display(display&&)            = default;
-  display& operator=(display&&) = default;
 };
 
 } // namespace arabica

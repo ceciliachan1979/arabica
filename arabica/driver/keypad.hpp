@@ -1,13 +1,20 @@
 #pragma once
 
 #include <arabica/type/noncopyable.hpp>
+#include <SDL2/SDL.h>
+#include <fmt/core.h>
 
 namespace arabica {
 
-class keypad : public noncopyable {
+class Keypad : public noncopyable {
 public:
-  keypad(keypad&&)            = default;
-  keypad& operator=(keypad&&) = default;
+  Keypad()  = default;
+  ~Keypad() = default;
+
+  Keypad(Keypad&&)            = default;
+  Keypad& operator=(Keypad&&) = default;
+
+  static int keydown_code;
 };
 
 } // namespace arabica

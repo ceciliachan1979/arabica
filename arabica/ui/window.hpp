@@ -1,8 +1,9 @@
 #pragma once
 
+#include <arabica/type/noncopyable.hpp>
+#include <arabica/emulator/emulator.hpp>
 #include <SDL2/SDL.h>
 #include <string>
-#include <arabica/type/noncopyable.hpp>
 
 namespace arabica {
 
@@ -16,6 +17,8 @@ public:
 
   void execute();
 
+  Emulator emulator;
+
 private:
   void   on_keyboard(const SDL_Keycode keycode);
   void   on_render();
@@ -23,7 +26,8 @@ private:
 
   bool _running = false;
 
-  SDL_Event     _event;
+  SDL_TimerID   _timer_id;
+  SDL_Event     _event{0};
   SDL_Window*   _window   = nullptr;
   SDL_Renderer* _renderer = nullptr;
 

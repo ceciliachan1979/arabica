@@ -1,9 +1,9 @@
 #pragma once
 
+#include <arabica/type/noncopyable.hpp>
 #include <cstdint>
 #include <cstddef>
 #include <array>
-#include <arabica/type/noncopyable.hpp>
 
 namespace arabica {
 

@@ -4,16 +4,20 @@
 
 namespace arabica {
 
-class sound : public noncopyable {
+class Sound : public noncopyable {
 public:
-  sound(const int r)
+  Sound()
+    : Sound(0) {
+  }
+
+  Sound(const int r)
     : rate{r} {
   }
 
-  ~sound() = default;
+  ~Sound() = default;
 
-  sound(sound&&)            = default;
-  sound& operator=(sound&&) = default;
+  Sound(Sound&&)            = default;
+  Sound& operator=(Sound&&) = default;
 
   int rate = 0;
 };

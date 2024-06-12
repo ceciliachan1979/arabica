@@ -4,16 +4,20 @@
 
 namespace arabica {
 
-class delay : public noncopyable {
+class Delay : public noncopyable {
 public:
-  delay(const int r)
+  Delay()
+    : Delay{0} {
+  }
+
+  Delay(const int r)
     : rate{r} {
   }
 
-  ~delay() = default;
+  ~Delay() = default;
 
-  delay(delay&&)            = default;
-  delay& operator=(delay&&) = default;
+  Delay(Delay&&)            = default;
+  Delay& operator=(Delay&&) = default;
 
   int rate = 0;
 };

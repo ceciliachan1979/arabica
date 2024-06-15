@@ -1,6 +1,5 @@
 #pragma once
 
-#include <arabica/type/noncopyable.hpp>
 #include <cstdint>
 #include <cstddef>
 #include <array>
@@ -32,7 +31,7 @@ namespace arabica {
 // |  interpreter  |
 // +---------------+= 0x000 (0) Start of Chip-8 RAM
 
-class Memory : public noncopyable {
+class Memory {
 public:
   using address_t = uint16_t;
   using value_t   = uint8_t;
@@ -42,9 +41,6 @@ public:
 
   Memory();
   ~Memory();
-
-  Memory(Memory&&)            = default;
-  Memory& operator=(Memory&&) = default;
 
   value_t&       read(const address_t address);
   const value_t& read(const address_t address) const;

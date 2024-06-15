@@ -1,10 +1,8 @@
 #pragma once
 
-#include <arabica/type/noncopyable.hpp>
-
 namespace arabica {
 
-class Delay : public noncopyable {
+class Delay {
 public:
   Delay()
     : Delay{0} {
@@ -13,11 +11,6 @@ public:
   Delay(const int r)
     : rate{r} {
   }
-
-  ~Delay() = default;
-
-  Delay(Delay&&)            = default;
-  Delay& operator=(Delay&&) = default;
 
   int rate = 0;
 };

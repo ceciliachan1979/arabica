@@ -1,10 +1,8 @@
 #pragma once
 
-#include <arabica/type/noncopyable.hpp>
-
 namespace arabica {
 
-class Rom : public noncopyable {
+class Rom {
 public:
 };
 

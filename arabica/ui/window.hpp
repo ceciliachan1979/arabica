@@ -1,19 +1,15 @@
 #pragma once
 
-#include <arabica/type/noncopyable.hpp>
 #include <arabica/emulator/emulator.hpp>
 #include <SDL2/SDL.h>
 #include <string>
 
 namespace arabica {
 
-class Window : public noncopyable {
+class Window {
 public:
   Window(const std::string& title, const int width, const int height);
   ~Window();
-
-  Window(Window&&)            = default;
-  Window& operator=(Window&&) = default;
 
   void execute();
 

@@ -1,10 +1,8 @@
 #pragma once
 
-#include <arabica/type/noncopyable.hpp>
-
 namespace arabica {
 
-class Sound : public noncopyable {
+class Sound {
 public:
   Sound()
     : Sound(0) {
@@ -13,11 +11,6 @@ public:
   Sound(const int r)
     : rate{r} {
   }
-
-  ~Sound() = default;
-
-  Sound(Sound&&)            = default;
-  Sound& operator=(Sound&&) = default;
 
   int rate = 0;
 };

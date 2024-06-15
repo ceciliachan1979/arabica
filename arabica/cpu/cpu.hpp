@@ -1,6 +1,5 @@
 #pragma once
 
-#include <arabica/type/noncopyable.hpp>
 #include <arabica/cpu/op_code.hpp>
 #include <arabica/memory/memory.hpp>
 #include <arabica/driver/keypad.hpp>
@@ -9,17 +8,11 @@
 
 namespace arabica {
 
-class CPU : public noncopyable {
+class CPU {
 public:
   constexpr static uint16_t REGISTER_COUNT  = 16;
   constexpr static uint16_t PC_START        = 0x0200;
   constexpr static uint8_t  DEFAULT_RATE_HZ = 60;
-
-  CPU()  = default;
-  ~CPU() = default;
-
-  CPU(CPU&&)            = default;
-  CPU& operator=(CPU&&) = default;
 
   void run(const Memory& memory); // workaround, code refactoring later
   void run(const Memory& memory, const Keypad& keypad);

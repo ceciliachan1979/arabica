@@ -7,11 +7,10 @@
 #include <arabica/driver/display.hpp>
 #include <arabica/driver/sound.hpp>
 #include <arabica/driver/delay.hpp>
-#include <arabica/type/noncopyable.hpp>
 
 namespace arabica {
 
-class Emulator : public noncopyable {
+class Emulator {
 public:
   void run();
 

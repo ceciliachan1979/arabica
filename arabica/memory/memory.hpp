@@ -1,8 +1,9 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <cstddef>
-#include <array>
+#include <string>
 
 namespace arabica {
 
@@ -46,6 +47,8 @@ public:
   const value_t& read(const address_t address) const;
 
   void write(const address_t address, const value_t value);
+
+  bool load(const std::string& rom);
 
   value_t&       operator[](const address_t address);
   const value_t& operator[](const address_t address) const;

@@ -1,5 +1,8 @@
+#include <iostream>
+#include <fstream>
 #include <arabica/memory/memory.hpp>
 #include <stdexcept>
+#include <fmt/core.h>
 
 namespace arabica {
 
@@ -42,6 +45,23 @@ void Memory::is_valid(const address_t address) const {
   if (!(address >= RESERVED && address < SIZE)) {
     throw std::out_of_range("Invalid memory address accessed");
   }
+}
+
+bool Memory::load(const std::string& rom) {
+  std::ifstream file(rom, std::ios::binary | std::ios::ate);
+  if (!file) {
+    fmt::print("Failed to open the file.");
+    return false;
+  }
+  std::streamsize size = file.tellg();
+  file.seekg(0, std::ios::beg);
+  if (!file.read(reinterpret_cast<char*>(_cell.data() + RESERVED), size)) {
+    file.close();
+    return false;
+  }
+
+  file.close();
+  return true;
 }
 
 } // namespace arabica

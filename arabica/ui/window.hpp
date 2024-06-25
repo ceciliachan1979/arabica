@@ -8,7 +8,7 @@ namespace arabica {
 
 class Window {
 public:
-  Window(const std::string& title, const int width, const int height);
+  Window(const std::string& title, const int width, const int height, const std::string& rom);
   ~Window();
 
   void execute();

@@ -1,12 +1,19 @@
 #include <arabica/emulator/emulator.hpp>
+#include <iostream>
+#include <fmt/core.h>
 
 namespace arabica {
 
+bool Emulator::load(const std::string& rom) {
+  return memory.load(rom);
+}
+
+// int cycle = 0;
+
 void Emulator::run() {
-  memory.write(cpu.pc, 0xF0);
-  memory.write(cpu.pc + 1, 0x0A);
+  // fmt::print("The current cycle is {}\n", cycle);
+  // cycle++;
   cpu.run(memory, keypad);
-  cpu.reset();
 }
 
 } // namespace arabica

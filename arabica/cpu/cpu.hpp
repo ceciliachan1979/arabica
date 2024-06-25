@@ -5,6 +5,7 @@
 #include <arabica/driver/keypad.hpp>
 #include <cstdint>
 #include <stack>
+#include <string>
 
 namespace arabica {
 

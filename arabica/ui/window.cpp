@@ -8,9 +8,14 @@ Uint32 _ontick(Uint32 interval, void* userdata) {
   return (static_cast<Window*>(userdata))->ontick(interval, userdata);
 }
 
-Window::Window(const std::string& title, const int width, const int height) {
+Window::Window(const std::string& title, const int width, const int height, const std::string& rom) {
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
     fmt::print("SDL could not initialize! SDL_Error: {}\n", SDL_GetError());
+    std::exit(1);
+  }
+
+  if (!emulator.load(rom)) {
+    fmt::print("Failed to load rom");
     std::exit(1);
   }
 
@@ -31,7 +36,10 @@ Window::Window(const std::string& title, const int width, const int height) {
     std::exit(1);
   }
 
-  _timer_id = SDL_AddTimer(2, _ontick, this);
+  const int delay = 2;
+  // const int delay = 1000;
+
+  _timer_id = SDL_AddTimer(delay, _ontick, this);
 }
 
 Window::~Window() {

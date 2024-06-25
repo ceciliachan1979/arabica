@@ -32,9 +32,12 @@ void CPU::run(const Memory& memory, const Keypad& keypad) {
   uint16_t prefix = instruction & 0xF000;
   opcode          = static_cast<OP_CODE>(prefix);
 
+  // fmt::print("[cpu log] instruction is {0:x}\n", instruction);
+
   switch (prefix) {
     case 0x0: {
       switch (instruction & 0x00FF) {
+        case 0xE0: opcode = OP_CODE::CLS; break;
         case 0xEE: opcode = OP_CODE::RET; break;
         default: break;
       }
@@ -71,6 +74,10 @@ void CPU::run(const Memory& memory, const Keypad& keypad) {
   }
 
   switch (opcode) {
+    case OP_CODE::CLS: {
+      // ToDo: actually clear the screen!
+      advance_pc(pc);
+    } break;
     case OP_CODE::JP_addr: {
       uint16_t target = instruction & 0x0FFF;
       pc              = target;
@@ -215,6 +222,7 @@ void CPU::run(const Memory& memory, const Keypad& keypad) {
     case OP_CODE::LD_I_addr: {
       uint16_t data = (instruction & 0x0FFF);
       reg_I         = data;
+      advance_pc(pc);
     } break;
     case OP_CODE::JP_V0_addr: {
       uint16_t base_address = (instruction & 0x0FFF);

@@ -31,4 +31,7 @@ test: clean
 	cd $(dir_build); cmake -DCMAKE_C_COMPILER="$(cc)" -DCMAKE_CXX_COMPILER="$(cxx)" -DBUILD_TEST=ON -GNinja ..; ninja; \
 	./$(test).out
 
-.PHONY: default fmt build execute clean
+debug: clean build
+	gdb -x commands.gdb --args ./$(dir_build)/$(app).out $(dir_rom)/cavern.ch8
+
+.PHONY: default fmt build execute clean debug

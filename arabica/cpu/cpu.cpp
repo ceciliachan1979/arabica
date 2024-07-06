@@ -1,6 +1,7 @@
 #include <arabica/cpu/cpu.hpp>
 #include <cstdint>
 #include <cstdlib>
+#include <vector>
 #include <random>
 #include <fmt/core.h>
 
@@ -22,17 +23,22 @@ void CPU::reset() {
   pc = PC_START;
 }
 
-void CPU::run(const Memory& memory) {
+void CPU::run(Memory& memory) {
   Keypad keypad;
   run(memory, keypad);
 }
 
-void CPU::run(const Memory& memory, const Keypad& keypad) {
+void CPU::run(Memory& memory, Keypad& keypad) {
+  Display display;
+  run(memory, keypad, display);
+}
+
+void CPU::run(Memory& memory, Keypad& keypad, Display& display) {
   instruction     = memory[pc] << 8 | memory[pc + 1];
   uint16_t prefix = instruction & 0xF000;
   opcode          = static_cast<OP_CODE>(prefix);
 
-  // fmt::print("[cpu log] instruction is {0:x}\n", instruction);
+  fmt::print("[cpu log] instruction is {0:x}\n", instruction);
 
   switch (prefix) {
     case 0x0: {
@@ -268,8 +274,37 @@ void CPU::run(const Memory& memory, const Keypad& keypad) {
         advance_pc(pc);
       }
     } break;
+    case OP_CODE::DRW_Vx_Vy_nibble: {
+      uint8_t vx     = (instruction & 0x0F00) >> 8;
+      uint8_t vy     = (instruction & 0x00F0) >> 4;
+      uint8_t nibble = instruction & 0x000F;
+
+      std::vector<uint8_t> sprite_data;
+      for (int i = 0; i < nibble; ++i) {
+        sprite_data.push_back(memory.read(reg_I + i));
+      }
+
+      for (int y = 0; y < nibble; ++y) {
+        uint8_t sprite_row = sprite_data[y];
+        for (int x = 0; x < 8; ++x) {
+          uint8_t pixel_value = (sprite_row >> (7 - x)) & 0x01;
+          int     screen_x    = (registers[vx] + x) % display.width;
+          int     screen_y    = (registers[vy] + y) % display.height;
+          if (pixel_value == 1) {
+            if (display.get_pixel(screen_x, screen_y)) {
+              registers[0xF] = 1;
+            }
+            // display.set_pixel(screen_x, screen_y, !display.get_pixel(screen_x, screen_y));
+            display.set_pixel(screen_x, screen_y, 255);
+          }
+        }
+      }
+      display.flag = true;
+      fmt::print("[cpu log] display flag = {}.\n", display.flag);
+      advance_pc(pc);
+    } break;
     default: {
-      // fmt::print("Unknown opcode: 0x{:X}\n", static_cast<uint16_t>(opcode));
+      fmt::print("Unknown opcode: 0x{:X}\n", static_cast<uint16_t>(opcode));
     } break;
   }
 }

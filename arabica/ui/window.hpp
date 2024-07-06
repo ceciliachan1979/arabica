@@ -20,12 +20,15 @@ private:
   void   on_render();
   Uint32 ontick(Uint32 interval, void* userdata);
 
-  bool _running = false;
+  bool _running{false};
+  int  _width{100};
+  int  _height{100};
 
   SDL_TimerID   _timer_id;
   SDL_Event     _event{0};
-  SDL_Window*   _window   = nullptr;
-  SDL_Renderer* _renderer = nullptr;
+  SDL_Window*   _window{nullptr};
+  SDL_Renderer* _renderer{nullptr};
+  SDL_Texture*  _texture{nullptr};
 
   friend Uint32 _ontick(Uint32 interval, void* userdata);
 };

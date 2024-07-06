@@ -7,6 +7,7 @@ src_emulator = arabica
 src_test     = test
 src          = $(src_app) $(src_emulator) $(src_test)
 dir_build    = build
+dir_rom      = rom
 
 default: build execute
 
@@ -20,7 +21,7 @@ build: clean
 	cd $(dir_build); cmake -DCMAKE_C_COMPILER="$(cc)" -DCMAKE_CXX_COMPILER="$(cxx)" -DBUILD_APP=ON -GNinja ..; ninja; 
 
 execute:
-	./$(dir_build)/$(app).out
+	./$(dir_build)/$(app).out $(dir_rom)/cavern.ch8
 
 clean:
 	rm -rf $(dir_build)

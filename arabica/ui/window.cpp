@@ -19,6 +19,9 @@ Window::Window(const std::string& title, const int width, const int height, cons
     std::exit(1);
   }
 
+  _width  = width;
+  _height = height;
+
   _window = SDL_CreateWindow(title.c_str(),           //
                              SDL_WINDOWPOS_UNDEFINED, //
                              SDL_WINDOWPOS_UNDEFINED, //
@@ -36,13 +39,23 @@ Window::Window(const std::string& title, const int width, const int height, cons
     std::exit(1);
   }
 
+  emulator.display.init(_width, _height);
+
+  _texture = SDL_CreateTexture(_renderer,                //
+                               SDL_PIXELFORMAT_ARGB8888, //
+                               SDL_TEXTUREACCESS_STATIC, //
+                               _width,                   //
+                               _height);                 //
+
+  _timer_id = SDL_AddTimer(2, _ontick, this);
+
   const int delay = 2;
   // const int delay = 1000;
-
   _timer_id = SDL_AddTimer(delay, _ontick, this);
 }
 
 Window::~Window() {
+  SDL_DestroyTexture(_texture);
   SDL_DestroyRenderer(_renderer);
   SDL_DestroyWindow(_window);
   SDL_Quit();
@@ -94,7 +107,22 @@ void Window::on_keyboard(const SDL_Keycode keycode) {
 
 void Window::on_render() {
   SDL_RenderClear(_renderer);
-  SDL_SetRenderDrawColor(_renderer, 0x33, 0x99, 0x66, 0xFF);
+  // SDL_SetRenderDrawColor(_renderer, 0x33, 0x99, 0x66, 0xFF);
+  //
+  // static auto color = 0x339966FF;
+  // if (emulator.display.flag) {
+  //   fmt::print("[emulator log] render n-byte sprite\n");
+  //   color                 = (color + 120) % 256;
+  //   emulator.display.flag = false;
+  // }
+  // for (int i = 0; i < _width * _height; ++i) {
+  //   emulator.display.pixels[i] = color;
+  // }
+  if (emulator.display.flag) {
+    SDL_UpdateTexture(_texture, NULL, emulator.display.pixels, _width * sizeof(uint32_t));
+    emulator.display.flag = false;
+  }
+  SDL_RenderCopy(_renderer, _texture, NULL, NULL);
   SDL_RenderPresent(_renderer);
 }
 

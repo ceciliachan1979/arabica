@@ -1,4 +1,8 @@
 # VSCode
+# CHIP-8
+*.ch8
+
+# VSCode
 .vscode/
 
 # CMake

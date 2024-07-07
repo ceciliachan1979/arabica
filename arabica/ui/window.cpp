@@ -47,8 +47,6 @@ Window::Window(const std::string& title, const int width, const int height, cons
                                _width,                   //
                                _height);                 //
 
-  _timer_id = SDL_AddTimer(2, _ontick, this);
-
   const int delay = 2;
   // const int delay = 1000;
   _timer_id = SDL_AddTimer(delay, _ontick, this);

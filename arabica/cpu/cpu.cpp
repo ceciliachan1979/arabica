@@ -62,6 +62,13 @@ void CPU::run(Memory& memory, Keypad& keypad, Display& display) {
         default: break;
       }
     } break;
+    case 0xE000: {
+      switch (instruction & 0x00FF) {
+        case 0x9E: opcode = OP_CODE::SKP_Vx; break;
+        case 0xA1: opcode = OP_CODE::SKNP_Vx; break;
+        default: break;
+      }
+    }
     case 0xF000: {
       switch (instruction & 0x00FF) {
         case 0x07: opcode = OP_CODE::LD_Vx_DT; break;
@@ -273,6 +280,20 @@ void CPU::run(Memory& memory, Keypad& keypad, Display& display) {
         fmt::print("[cpu log] reg{} is {}\n", x, registers[x]);
         advance_pc(pc);
       }
+    } break;
+    case OP_CODE::SKP_Vx: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      if (keypad.keydown_code == registers[x]) {
+        advance_pc(pc);
+      }
+      advance_pc(pc);
+    } break;
+    case OP_CODE::SKNP_Vx: {
+      uint8_t x = (instruction & 0x0F00) >> 8;
+      if (keypad.keydown_code != registers[x]) {
+        advance_pc(pc);
+      }
+      advance_pc(pc);
     } break;
     case OP_CODE::DRW_Vx_Vy_nibble: {
       uint8_t vx     = (instruction & 0x0F00) >> 8;

@@ -4,12 +4,22 @@ namespace arabica {
 
 class Delay {
 public:
-  Delay()
-    : Delay{0} {
+  Delay(const int r = 0)
+    : rate{r} {
   }
 
-  Delay(const int r)
-    : rate{r} {
+  void set(const uint8_t value) {
+    rate = value;
+  }
+
+  uint8_t get() const {
+    return rate;
+  }
+
+  void tick() {
+    if (rate > 0) {
+      --rate;
+    }
   }
 
   int rate = 0;

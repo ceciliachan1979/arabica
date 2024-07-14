@@ -8,17 +8,15 @@
     arabica::Emulator emulator;                                    \
     test_case_body                                                 \
   }
-// ----
 
-#define arabica_keypress_test(i)                        \
-  arabica_keypress_test_impl(test_key##i##_down, {      \
-    emulator.keypad.keydown_code = 0x##i;               \
-    emulator.memory.write(emulator.cpu.pc, 0xF0);       \
-    emulator.memory.write(emulator.cpu.pc + 1, 0x0A);   \
-    emulator.cpu.run(emulator.memory, emulator.keypad); \
-    ASSERT_EQ(emulator.cpu.registers[0], 0x##i);        \
-  });                                                   \
-  // ----
+#define arabica_keypress_test(i)                      \
+  arabica_keypress_test_impl(test_key##i##_down, {    \
+    emulator.keypad.keydown_code = 0x##i;             \
+    emulator.memory.write(emulator.cpu.pc, 0xF0);     \
+    emulator.memory.write(emulator.cpu.pc + 1, 0x0A); \
+    emulator.single_step();                           \
+    ASSERT_EQ(emulator.cpu.registers[0], 0x##i);      \
+  });
 
 arabica_keypress_test(0);
 arabica_keypress_test(1);

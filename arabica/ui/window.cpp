@@ -1,15 +1,14 @@
 #include <arabica/ui/window.hpp>
-#include <arabica/driver/keypad.hpp>
 #include <fmt/core.h>
 
 namespace arabica {
 
-Uint32 _ontick(Uint32 interval, void* userdata) {
-  return (static_cast<Window*>(userdata))->ontick(interval, userdata);
+Uint32 _on_tick(Uint32 interval, void* userdata) {
+  return (static_cast<Window*>(userdata))->on_tick(interval, userdata);
 }
 
 Window::Window(const std::string& title, const int width, const int height, const std::string& rom) {
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
     fmt::print("SDL could not initialize! SDL_Error: {}\n", SDL_GetError());
     std::exit(1);
   }
@@ -39,17 +38,18 @@ Window::Window(const std::string& title, const int width, const int height, cons
     std::exit(1);
   }
 
-  emulator.display.init(_width, _height);
+  int scale = 10;
+  emulator.display.init(_width / scale, _height / scale, scale);
 
-  _texture = SDL_CreateTexture(_renderer,                //
-                               SDL_PIXELFORMAT_ARGB8888, //
-                               SDL_TEXTUREACCESS_STATIC, //
-                               _width,                   //
-                               _height);                 //
+  _texture = SDL_CreateTexture(_renderer,
+                               SDL_PIXELFORMAT_ARGB8888,
+                               SDL_TEXTUREACCESS_STATIC,
+                               scale * emulator.display.width,
+                               scale * emulator.display.height);
 
-  const int delay = 2;
-  // const int delay = 1000;
-  _timer_id = SDL_AddTimer(delay, _ontick, this);
+  const Uint32 delay       = 2; // f = 1 / T = 1 / 0.002 (ms) = 500 Hz
+  emulator.cpu.clock_speed = delay;
+  _timer_id                = SDL_AddTimer(delay, _on_tick, this);
 }
 
 Window::~Window() {
@@ -105,28 +105,19 @@ void Window::on_keyboard(const SDL_Keycode keycode) {
 
 void Window::on_render() {
   SDL_RenderClear(_renderer);
-  // SDL_SetRenderDrawColor(_renderer, 0x33, 0x99, 0x66, 0xFF);
-  //
-  // static auto color = 0x339966FF;
-  // if (emulator.display.flag) {
-  //   fmt::print("[emulator log] render n-byte sprite\n");
-  //   color                 = (color + 120) % 256;
-  //   emulator.display.flag = false;
-  // }
-  // for (int i = 0; i < _width * _height; ++i) {
-  //   emulator.display.pixels[i] = color;
-  // }
   if (emulator.display.flag) {
-    SDL_UpdateTexture(_texture, NULL, emulator.display.pixels, _width * sizeof(uint32_t));
+    SDL_UpdateTexture(_texture,
+                      nullptr,
+                      emulator.display.pixels,
+                      emulator.display.width * emulator.display.scale * sizeof(uint32_t));
     emulator.display.flag = false;
   }
-  SDL_RenderCopy(_renderer, _texture, NULL, NULL);
+  SDL_RenderCopy(_renderer, _texture, nullptr, nullptr);
   SDL_RenderPresent(_renderer);
 }
 
-Uint32 Window::ontick(Uint32 interval, void* userdata) {
-  emulator.run();
-  // TODO: Check if there are update to display, if so, tell SDL to redraw (how - remember this is a separate thread)
+Uint32 Window::on_tick(Uint32 interval, void* userdata) {
+  emulator.execute();
   return interval;
 }
 

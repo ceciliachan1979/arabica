@@ -2,11 +2,9 @@
 
 #include <arabica/cpu/op_code.hpp>
 #include <arabica/memory/memory.hpp>
-#include <arabica/driver/keypad.hpp>
-#include <arabica/driver/display.hpp>
+#include <SDL2/SDL.h>
 #include <cstdint>
 #include <stack>
-#include <string>
 
 namespace arabica {
 
@@ -16,13 +14,23 @@ public:
   constexpr static uint16_t PC_START        = 0x0200;
   constexpr static uint8_t  DEFAULT_RATE_HZ = 60;
 
-  // workaround, code refactoring later
-  void run(Memory& memory);
-  void run(Memory& memory, Keypad& keypad);
-  void run(Memory& memory, Keypad& keypad, Display& display);
+  CPU(Memory& mem)
+    : memory(mem) {
+  }
 
-  void reset();
+  void reset_pc() {
+    pc = PC_START;
+  }
 
+  void advance_pc(uint16_t offset = 2) {
+    pc += offset;
+  }
+
+  void setMemory(Memory& mem) {
+    memory = mem;
+  }
+
+  Uint32               clock_speed{0};
   uint8_t              registers[REGISTER_COUNT] = {0};
   uint16_t             reg_I{0x0000};
   uint8_t              reg_delay{DEFAULT_RATE_HZ};
@@ -31,6 +39,7 @@ public:
   std::stack<uint16_t> stack;
   uint16_t             instruction{0x0000};
   OP_CODE              opcode{OP_CODE::CLS};
+  Memory&              memory;
 };
 
 } // namespace arabica

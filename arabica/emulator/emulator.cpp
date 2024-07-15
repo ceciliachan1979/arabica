@@ -13,6 +13,10 @@ inline T random(T range_from, T range_to) {
   return distr(generator);
 }
 
+bool Emulator::init() {
+  return sound.init();
+}
+
 bool Emulator::load(const std::string& rom) {
   return memory.load(rom);
 }

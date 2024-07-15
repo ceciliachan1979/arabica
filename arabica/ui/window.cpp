@@ -13,6 +13,11 @@ Window::Window(const std::string& title, const int width, const int height, cons
     std::exit(1);
   }
 
+  if (!emulator.init()) {
+    fmt::print("Failed to initialize emulator");
+    std::exit(1);
+  }
+
   if (!emulator.load(rom)) {
     fmt::print("Failed to load rom");
     std::exit(1);

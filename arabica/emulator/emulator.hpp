@@ -18,6 +18,7 @@ public:
     , cpu(memory) {
   }
 
+  bool init();
   bool load(const std::string& rom);
   void single_step();
   void execute();

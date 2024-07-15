@@ -14,6 +14,9 @@ public:
     , sample_rate(sample_rate)
     , frequency(frequency)
     , volume(volume) {
+  }
+
+  bool init() {
     // The following comments source from: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#2.5
     //
     // Chip-8 provides a sound timer.
@@ -39,8 +42,10 @@ public:
     _device = SDL_OpenAudioDevice(nullptr, 0, &_desired_spec, &_spec, 0);
     if (_device == 0) {
       SDL_Log("Failed to open audio: %s", SDL_GetError());
-      SDL_Quit();
+      return false;
     }
+
+    return true;
   }
 
   ~Sound() {

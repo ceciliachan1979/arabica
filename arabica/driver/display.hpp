@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 namespace arabica {
 
 class Display {
@@ -14,46 +16,65 @@ public:
     width           = w;
     height          = h;
     scale           = s;
-    pixels          = new uint32_t[(width * scale) * (height * scale)];
-    vertical_offset = scale * height / 5;
+    scale_width     = scale * width;
+    scale_height    = scale * height;
+    pixels          = new uint32_t[scale_width * scale_height];
+    vertical_offset = scale_height / 5;
     reset();
   }
 
   void set(const int x, const int y, const uint32_t color) {
-    if (x >= 0 && x < width * scale && y >= 0 && y < height * scale) {
-      pixels[y * width * scale + x] = color;
+    if (x >= 0 && x < scale_width && y >= 0 && y < scale_height) {
+      pixels[y * scale_width + x] = color;
     }
   }
 
   uint32_t get(const int x, const int y) const {
-    if (x >= 0 && x < width * scale && y >= 0 && y < height * scale) {
-      return pixels[y * width * scale + x];
+    if (x >= 0 && x < scale_width && y >= 0 && y < scale_height) {
+      return pixels[y * scale_width + x];
     }
     return 0;
   }
 
   void reset() {
-    for (int i = 0; i < width * scale * height * scale; ++i) {
+    for (int i = 0; i < scale_width * scale_height; ++i) {
       pixels[i] = 0;
     }
   }
 
-  void update(const int screen_x, const int screen_y) {
-    for (int dy = 0; dy < scale; ++dy) {
-      for (int dx = 0; dx < scale; ++dx) {
-        const auto cx    = screen_x * scale + dx;
-        const auto cy    = screen_y * scale + dy + vertical_offset;
-        const auto pixel = get(cx, cy);
-        set(cx, cy, pixel ^ 255);
+  int update(const int reg_vx, const int reg_vy, const std::vector<uint8_t>& sprite_data) {
+    bool collision = false;
+    for (int y = 0; y < sprite_data.size(); ++y) {
+      const uint8_t sprite_row = sprite_data[y];
+      for (int x = 0; x < 8; ++x) {
+        const uint8_t pixel_value = (sprite_row >> (7 - x)) & 0x01;
+        if (pixel_value == 1) {
+          const int screen_x = (reg_vx + x) % width;
+          const int screen_y = (reg_vy + y) % height;
+          const int scaled_x = screen_x * scale;
+          const int scaled_y = screen_y * scale + vertical_offset;
+
+          for (int dy = 0; dy < scale; ++dy) {
+            for (int dx = 0; dx < scale; ++dx) {
+              if (get(scaled_x + dx, scaled_y + dy) != 0) {
+                collision = true;
+              }
+              set(scaled_x + dx, scaled_y + dy, get(scaled_x + dx, scaled_y + dy) ^ 0xFF0000FF);
+            }
+          }
+        }
       }
     }
+    return collision ? 1 : 0;
   }
 
   uint32_t* pixels{nullptr};
   int       width{0};
   int       height{0};
   int       scale{1};
-  bool      flag{false};
+  int       scale_width{0};
+  int       scale_height{0};
+  bool      is_refresh{false};
   int       vertical_offset{0};
 };
 

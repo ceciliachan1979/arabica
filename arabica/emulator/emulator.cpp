@@ -111,7 +111,7 @@ void Emulator::single_step() {
     // Clear the display.
     case OP_CODE::CLS: {
       display.reset();
-      display.flag = true;
+      display.is_refresh = true;
       cpu.advance_pc();
     } break;
     // 1nnn - JP addr
@@ -504,26 +504,8 @@ void Emulator::single_step() {
       for (int i = 0; i < nibble; ++i) {
         sprite_data.push_back(memory.read(cpu.reg_I + i));
       }
-
-      cpu.registers[0xF] = 0;
-
-      for (int y = 0; y < nibble; ++y) {
-        const uint8_t sprite_row = sprite_data[y];
-        for (int x = 0; x < 8; ++x) {
-          const uint8_t pixel_value = (sprite_row >> (7 - x)) & 0x01;
-          const int     screen_x    = (cpu.registers[vx] + x) % display.width;
-          const int     screen_y    = (cpu.registers[vy] + y) % display.height;
-
-          if (pixel_value == 1) {
-            if (display.get(screen_x * display.scale, (screen_y * display.scale) + display.vertical_offset)) {
-              cpu.registers[0xF] = 1;
-            }
-            display.update(screen_x, screen_y);
-          }
-        }
-      }
-      display.flag = true;
-      log_info("display flag = {}.\n", display.flag);
+      cpu.registers[0xF] = display.update(cpu.registers[vx], cpu.registers[vy], sprite_data);
+      display.is_refresh = true;
       cpu.advance_pc();
     } break;
     // Fx29 - LD F, Vx

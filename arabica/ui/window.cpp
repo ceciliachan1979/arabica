@@ -119,7 +119,7 @@ void Window::on_keyboard(const SDL_Keycode keycode, const bool is_pressed) {
 }
 
 void Window::on_render() {
-  if (emulator.display.flag) {
+  if (emulator.display.is_refresh) {
     {
       SDL_RenderClear(_renderer);
       SDL_UpdateTexture(_texture,
@@ -129,7 +129,7 @@ void Window::on_render() {
       SDL_RenderCopy(_renderer, _texture, nullptr, nullptr);
       SDL_RenderPresent(_renderer);
     }
-    emulator.display.flag = false;
+    emulator.display.is_refresh = false;
   }
 }
 

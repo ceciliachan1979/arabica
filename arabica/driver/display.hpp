@@ -47,8 +47,7 @@ public:
     for (int y = 0; y < sprite_data.size(); ++y) {
       const uint8_t sprite_row = sprite_data[y];
       for (int x = 0; x < 8; ++x) {
-        const uint8_t pixel_value = (sprite_row >> (7 - x)) & 0x01;
-        if (pixel_value == 1) {
+        if (const uint8_t pixel = (sprite_row >> (7 - x)) & 0x01; pixel == 1) {
           const int screen_x = (reg_vx + x) % width;
           const int screen_y = (reg_vy + y) % height;
           const int scaled_x = screen_x * scale;
@@ -56,10 +55,13 @@ public:
 
           for (int dy = 0; dy < scale; ++dy) {
             for (int dx = 0; dx < scale; ++dx) {
-              if (get(scaled_x + dx, scaled_y + dy) != 0) {
+              const auto scaled_dx = scaled_x + dx;
+              const auto scaled_dy = scaled_y + dy;
+              const auto pre_pixel = get(scaled_dx, scaled_dy);
+              if (pre_pixel != 0) {
                 collision = true;
               }
-              set(scaled_x + dx, scaled_y + dy, get(scaled_x + dx, scaled_y + dy) ^ 0xFF0000FF);
+              set(scaled_dx, scaled_dy, pre_pixel ^ 0xFF0000FF);
             }
           }
         }

@@ -22,11 +22,11 @@ public:
     pc = PC_START;
   }
 
-  void advance_pc(uint16_t offset = 2) {
+  void advance_pc(const uint16_t offset = 2) {
     pc += offset;
   }
 
-  void setMemory(Memory& mem) {
+  void set_memory(Memory& mem) {
     memory = mem;
   }
 

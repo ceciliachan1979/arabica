@@ -11,10 +11,11 @@ public:
   }
 
   void init(const int w, const int h, const int s) {
-    width  = w;
-    height = h;
-    scale  = s;
-    pixels = new uint32_t[(width * scale) * (height * scale)];
+    width           = w;
+    height          = h;
+    scale           = s;
+    pixels          = new uint32_t[(width * scale) * (height * scale)];
+    vertical_offset = scale * height / 5;
     reset();
   }
 
@@ -37,7 +38,7 @@ public:
     }
   }
 
-  void update(const int screen_x, const int screen_y, const int vertical_offset) {
+  void update(const int screen_x, const int screen_y) {
     for (int dy = 0; dy < scale; ++dy) {
       for (int dx = 0; dx < scale; ++dx) {
         const auto cx    = screen_x * scale + dx;
@@ -53,6 +54,7 @@ public:
   int       height{0};
   int       scale{1};
   bool      flag{false};
+  int       vertical_offset{0};
 };
 
 } // namespace arabica

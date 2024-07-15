@@ -15,12 +15,10 @@ Memory::~Memory() {
 }
 
 Memory::value_t& Memory::read(const address_t address) {
-  is_valid(address);
   return _cell[address];
 }
 
 const Memory::value_t& Memory::read(const address_t address) const {
-  is_valid(address);
   return _cell[address];
 }
 

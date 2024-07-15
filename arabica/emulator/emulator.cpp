@@ -18,7 +18,7 @@ bool Emulator::load(const std::string& rom) {
 }
 
 void Emulator::execute() {
-  is_enable_log = true;
+  is_enable_log = false;
 
   log_info("PC = {:x}\n", cpu.pc);
   single_step();
@@ -106,9 +106,8 @@ void Emulator::single_step() {
     //
     // Clear the display.
     case OP_CODE::CLS: {
-      display.reset_pixel();
-      display.flag       = true;
-      cpu.registers[0xF] = 0;
+      display.reset();
+      display.flag = true;
       cpu.advance_pc();
     } break;
     // 1nnn - JP addr
@@ -448,11 +447,9 @@ void Emulator::single_step() {
     case OP_CODE::LD_Vx_K: {
       const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
 
-      if (keypad.keydown_code != -1) {
-        log_info("pressed key is {}\n", keypad.keydown_code);
-        cpu.registers[vx]   = keypad.keydown_code;
-        keypad.keydown_code = -1;
-        log_info("reg{} is {}\n", vx, cpu.registers[vx]);
+      const auto keycode = keypad.get_last_keypressed_code();
+      if (keycode != -1) {
+        cpu.registers[vx] = keycode;
         cpu.advance_pc();
       }
     } break;
@@ -465,7 +462,7 @@ void Emulator::single_step() {
     case OP_CODE::SKP_Vx: {
       const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
 
-      if (keypad.keydown_code == cpu.registers[vx]) {
+      if (keypad.is_keypressed(cpu.registers[vx])) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -479,7 +476,7 @@ void Emulator::single_step() {
     case OP_CODE::SKNP_Vx: {
       const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
 
-      if (keypad.keydown_code != cpu.registers[vx]) {
+      if (!keypad.is_keypressed(cpu.registers[vx])) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -506,7 +503,7 @@ void Emulator::single_step() {
 
       cpu.registers[0xF] = 0;
 
-      int vertical_offset = display.scale * (display.height - nibble) / 5;
+      int vertical_offset = display.scale * display.height / 5;
       for (int y = 0; y < nibble; ++y) {
         const uint8_t sprite_row = sprite_data[y];
         for (int x = 0; x < 8; ++x) {
@@ -515,17 +512,10 @@ void Emulator::single_step() {
           const int     screen_y    = (cpu.registers[vy] + y) % display.height;
 
           if (pixel_value == 1) {
-            if (display.get_pixel(screen_x * display.scale, (screen_y * display.scale) + vertical_offset)) {
+            if (display.get(screen_x * display.scale, (screen_y * display.scale) + vertical_offset)) {
               cpu.registers[0xF] = 1;
             }
-            for (int dy = 0; dy < display.scale; ++dy) {
-              for (int dx = 0; dx < display.scale; ++dx) {
-                const auto cx    = screen_x * display.scale + dx;
-                const auto cy    = screen_y * display.scale + dy + vertical_offset;
-                const auto pixel = display.get_pixel(cx, cy);
-                display.set_pixel(cx, cy, pixel ^ 255);
-              }
-            }
+            display.update(screen_x, screen_y, vertical_offset);
           }
         }
       }

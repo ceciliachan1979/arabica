@@ -13,7 +13,7 @@ public:
 
   void execute();
 
-  void   on_keyboard(const SDL_Keycode keycode);
+  void   on_keyboard(const SDL_Keycode keycode, const bool is_pressed);
   void   on_render();
   Uint32 on_tick(Uint32 interval, void* userdata);
 

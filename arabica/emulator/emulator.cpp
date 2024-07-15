@@ -564,7 +564,6 @@ void Emulator::single_step() {
       for (int i = 0; i <= vx; i++) {
         memory[cpu.reg_I + i] = cpu.registers[i];
       }
-      cpu.reg_I += vx + 1;
       cpu.advance_pc();
     } break;
     // Fx65 - LD Vx, [I]
@@ -578,7 +577,6 @@ void Emulator::single_step() {
       for (int i = 0; i <= vx; i++) {
         cpu.registers[i] = memory[cpu.reg_I + i];
       }
-      cpu.reg_I += vx + 1;
       cpu.advance_pc();
     } break;
     default: {

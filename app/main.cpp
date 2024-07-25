@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     return 1;
     fmt::print("Usage: ./arabica.out rom-file");
   }
-  arabica::Window window("Arabica Emulator", 640, 480, argv[1]);
+  arabica::Window window("Arabica Emulator", 640, 320, argv[1]);
   window.execute();
   return 0;
 }

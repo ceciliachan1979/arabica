@@ -13,31 +13,33 @@ public:
   }
 
   void init(const int w, const int h, const int s) {
-    width           = w;
-    height          = h;
-    scale           = s;
-    scale_width     = scale * width;
-    scale_height    = scale * height;
-    pixels          = new uint32_t[scale_width * scale_height];
-    vertical_offset = scale_height / 5;
+    scale             = s;
+    window_width      = w;
+    window_height     = h;
+    resolution        = w * h;
+    chip8_width       = w / s;
+    chip8_height      = h / s;
+    pixels            = new uint32_t[resolution];
+    horizontal_offset = 0;
+    vertical_offset   = 0;
     reset();
   }
 
   void set(const int x, const int y, const uint32_t color) {
-    if (x >= 0 && x < scale_width && y >= 0 && y < scale_height) {
-      pixels[y * scale_width + x] = color;
+    if (x >= 0 && x < window_width && y >= 0 && y < window_height) {
+      pixels[y * window_width + x] = color;
     }
   }
 
   uint32_t get(const int x, const int y) const {
-    if (x >= 0 && x < scale_width && y >= 0 && y < scale_height) {
-      return pixels[y * scale_width + x];
+    if (x >= 0 && x < window_width && y >= 0 && y < window_height) {
+      return pixels[y * window_width + x];
     }
     return 0;
   }
 
   void reset() {
-    for (int i = 0; i < scale_width * scale_height; ++i) {
+    for (int i = 0; i < resolution; ++i) {
       pixels[i] = 0;
     }
   }
@@ -48,20 +50,20 @@ public:
       const uint8_t sprite_row = sprite_data[y];
       for (int x = 0; x < 8; ++x) {
         if (const uint8_t pixel = (sprite_row >> (7 - x)) & 0x01; pixel == 1) {
-          const int screen_x = (reg_vx + x) % width;
-          const int screen_y = (reg_vy + y) % height;
-          const int scaled_x = screen_x * scale;
-          const int scaled_y = screen_y * scale + vertical_offset;
+          const int device_x = (reg_vx + x) % chip8_width;
+          const int device_y = (reg_vy + y) % chip8_height;
+          const int window_x = device_x * scale + horizontal_offset;
+          const int window_y = device_y * scale + vertical_offset;
 
           for (int dy = 0; dy < scale; ++dy) {
             for (int dx = 0; dx < scale; ++dx) {
-              const auto scaled_dx = scaled_x + dx;
-              const auto scaled_dy = scaled_y + dy;
-              const auto pre_pixel = get(scaled_dx, scaled_dy);
+              const auto window_dx = window_x + dx;
+              const auto window_dy = window_y + dy;
+              const auto pre_pixel = get(window_dx, window_dy);
               if (pre_pixel != 0) {
                 collision = true;
               }
-              set(scaled_dx, scaled_dy, pre_pixel ^ 0xFF0000FF);
+              set(window_dx, window_dy, pre_pixel ^ 0xFF0000FF);
             }
           }
         }
@@ -71,12 +73,14 @@ public:
   }
 
   uint32_t* pixels{nullptr};
-  int       width{0};
-  int       height{0};
+  int       chip8_width{0};
+  int       chip8_height{0};
   int       scale{1};
-  int       scale_width{0};
-  int       scale_height{0};
+  int       window_width{0};
+  int       window_height{0};
+  int       resolution{0};
   bool      is_refresh{false};
+  int       horizontal_offset{0};
   int       vertical_offset{0};
 };
 

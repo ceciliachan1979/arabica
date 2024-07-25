@@ -44,13 +44,13 @@ Window::Window(const std::string& title, const int width, const int height, cons
   }
 
   int scale = 10;
-  emulator.display.init(_width / scale, _height / scale, scale);
+  emulator.display.init(_width, _height, scale);
 
   _texture = SDL_CreateTexture(_renderer,
                                SDL_PIXELFORMAT_ARGB8888,
                                SDL_TEXTUREACCESS_STATIC,
-                               scale * emulator.display.width,
-                               scale * emulator.display.height);
+                               emulator.display.window_width,
+                               emulator.display.window_height);
 
   emulator.cpu.clock_speed = 500; // 500Hz
 
@@ -122,15 +122,10 @@ void Window::on_keyboard(const SDL_Keycode keycode, const bool is_pressed) {
 
 void Window::on_render() {
   if (emulator.display.is_refresh) {
-    {
-      SDL_RenderClear(_renderer);
-      SDL_UpdateTexture(_texture,
-                        nullptr,
-                        emulator.display.pixels,
-                        emulator.display.width * emulator.display.scale * sizeof(uint32_t));
-      SDL_RenderCopy(_renderer, _texture, nullptr, nullptr);
-      SDL_RenderPresent(_renderer);
-    }
+    SDL_RenderClear(_renderer);
+    SDL_UpdateTexture(_texture, nullptr, emulator.display.pixels, emulator.display.window_width * sizeof(uint32_t));
+    SDL_RenderCopy(_renderer, _texture, nullptr, nullptr);
+    SDL_RenderPresent(_renderer);
     emulator.display.is_refresh = false;
   }
 }

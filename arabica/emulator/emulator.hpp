@@ -2,10 +2,10 @@
 
 #include <arabica/cpu/cpu.hpp>
 #include <arabica/memory/memory.hpp>
-#include <arabica/driver/keypad.hpp>
-#include <arabica/driver/display.hpp>
-#include <arabica/driver/sound.hpp>
-#include <arabica/driver/delay.hpp>
+#include <arabica/device/keypad.hpp>
+#include <arabica/device/display.hpp>
+#include <arabica/device/sound.hpp>
+#include <arabica/device/delay.hpp>
 #include <fmt/core.h>
 #include <random>
 

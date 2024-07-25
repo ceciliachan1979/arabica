@@ -23,8 +23,11 @@ public:
   void single_step();
   void execute();
 
-  bool    is_enable_log;
-  int     cycle;
+  int  fps                    = 60;         // 60 FPS = 60 (Frames Per Second) = 60 (frames) / 1 (second)
+  int  milliseconds_per_frame = 1000 / fps; // (FPS)^{-1} = 1 (s) / 60 (frames) = 1000 (milliseconds) / 60 (frames)
+  int  cycle                  = 0;
+  bool is_enable_log          = false;
+
   CPU     cpu;
   Memory  memory;
   Keypad  keypad;

@@ -25,7 +25,12 @@ void Emulator::execute() {
   is_enable_log = false;
 
   log_info("PC = {:x}\n", cpu.pc);
-  single_step();
+
+  // 500 Hz / 60 FPS = 500 (Instructions / Second) / 60 (Frames / Second) = 500 / 60 (Instructions / Frame)
+  const int instructions_pre_frames = cpu.clock_speed / fps;
+  for (int i = 0; i < instructions_pre_frames; ++i) {
+    single_step();
+  }
 
   log_info("The current cycle is {}\n", cycle);
   cycle++;

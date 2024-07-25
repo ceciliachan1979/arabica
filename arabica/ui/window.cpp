@@ -52,9 +52,11 @@ Window::Window(const std::string& title, const int width, const int height, cons
                                scale * emulator.display.width,
                                scale * emulator.display.height);
 
-  const Uint32 delay       = 2; // f = 1 / T = 1 / 0.002 (ms) = 500 Hz
-  emulator.cpu.clock_speed = delay;
-  _timer_id                = SDL_AddTimer(delay, _on_tick, this);
+  emulator.cpu.clock_speed = 500; // 500Hz
+
+  _timer_id = SDL_AddTimer(emulator.milliseconds_per_frame, //
+                           _on_tick,                        // every `t` milliseonds will execute `_on_tick`
+                           this);                           //
 }
 
 Window::~Window() {

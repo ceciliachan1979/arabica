@@ -1,17 +1,8 @@
 #include <arabica/emulator/emulator.hpp>
 #include <cstdint>
 #include <vector>
-#include <random>
 
 namespace arabica {
-
-template<typename T>
-inline T random(T range_from, T range_to) {
-  std::random_device               rand_dev;
-  std::mt19937                     generator(rand_dev());
-  std::uniform_int_distribution<T> distr(range_from, range_to);
-  return distr(generator);
-}
 
 bool Emulator::init() {
   return sound.init();
@@ -36,13 +27,7 @@ void Emulator::execute() {
   cycle++;
 
   delay.tick();
-
-  if (cpu.reg_sound > 0) {
-    cpu.reg_sound--;
-    if (cpu.reg_sound == 0) {
-      sound.stop_beep();
-    }
-  }
+  sound.tick();
 }
 
 void Emulator::single_step() {

@@ -15,7 +15,7 @@ public:
 
   void   on_keyboard(const SDL_Keycode keycode, const bool is_pressed);
   void   on_render();
-  Uint32 on_tick(Uint32 interval, void* userdata);
+  Uint32 on_tick(const Uint32 interval, void* userdata);
 
   Emulator emulator;
 
@@ -30,7 +30,7 @@ private:
   SDL_Renderer* _renderer{nullptr};
   SDL_Texture*  _texture{nullptr};
 
-  friend Uint32 _on_tick(Uint32 interval, void* userdata);
+  friend Uint32 _on_tick(const Uint32 interval, void* userdata);
 };
 
 } // namespace arabica

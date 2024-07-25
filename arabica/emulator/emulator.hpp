@@ -7,6 +7,7 @@
 #include <arabica/driver/sound.hpp>
 #include <arabica/driver/delay.hpp>
 #include <fmt/core.h>
+#include <random>
 
 namespace arabica {
 
@@ -36,6 +37,14 @@ public:
   Delay   delay;
 
 private:
+  template<typename T>
+  inline T random(T range_from, T range_to) {
+    std::random_device               rand_dev;
+    std::mt19937                     generator(rand_dev());
+    std::uniform_int_distribution<T> distr(range_from, range_to);
+    return distr(generator);
+  }
+
   template<typename... Args>
   inline void log_info(const char* const format, const Args&... args) {
     if (is_enable_log) {

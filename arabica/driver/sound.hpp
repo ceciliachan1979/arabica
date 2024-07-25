@@ -55,6 +55,15 @@ public:
     SDL_Quit();
   }
 
+  void tick() {
+    if (frequency > 0) {
+      frequency--;
+      if (frequency == 0) {
+        stop_beep();
+      }
+    }
+  }
+
   void start_beep() {
     if (_device != 0) {
       SDL_PauseAudioDevice(_device, 0);

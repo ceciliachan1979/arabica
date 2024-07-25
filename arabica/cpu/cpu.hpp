@@ -13,6 +13,7 @@ public:
   constexpr static uint16_t REGISTER_COUNT  = 16;
   constexpr static uint16_t PC_START        = 0x0200;
   constexpr static uint8_t  DEFAULT_RATE_HZ = 60;
+  constexpr static Uint32   DEFAULT_CPU_HZ  = 500;
 
   CPU(Memory& mem)
     : memory(mem) {
@@ -30,7 +31,7 @@ public:
     memory = mem;
   }
 
-  Uint32               clock_speed{0};
+  Uint32               clock_speed{DEFAULT_CPU_HZ};
   uint8_t              registers[REGISTER_COUNT] = {0};
   uint16_t             reg_I{0x0000};
   uint8_t              reg_delay{DEFAULT_RATE_HZ};

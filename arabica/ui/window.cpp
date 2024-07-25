@@ -3,7 +3,7 @@
 
 namespace arabica {
 
-Uint32 _on_tick(Uint32 interval, void* userdata) {
+Uint32 _on_tick(const Uint32 interval, void* userdata) {
   return (static_cast<Window*>(userdata))->on_tick(interval, userdata);
 }
 
@@ -22,6 +22,8 @@ Window::Window(const std::string& title, const int width, const int height, cons
     fmt::print("Failed to load rom");
     std::exit(1);
   }
+
+  emulator.display.init(width, height, 10);
 
   _width  = width;
   _height = height;
@@ -43,16 +45,11 @@ Window::Window(const std::string& title, const int width, const int height, cons
     std::exit(1);
   }
 
-  int scale = 10;
-  emulator.display.init(_width, _height, scale);
-
   _texture = SDL_CreateTexture(_renderer,
                                SDL_PIXELFORMAT_ARGB8888,
                                SDL_TEXTUREACCESS_STATIC,
                                emulator.display.window_width,
                                emulator.display.window_height);
-
-  emulator.cpu.clock_speed = 500; // 500Hz
 
   _timer_id = SDL_AddTimer(emulator.milliseconds_per_frame, //
                            _on_tick,                        // every `t` milliseonds will execute `_on_tick`
@@ -130,7 +127,7 @@ void Window::on_render() {
   }
 }
 
-Uint32 Window::on_tick(Uint32 interval, void* userdata) {
+Uint32 Window::on_tick(const Uint32 interval, void* userdata) {
   emulator.execute();
   return interval;
 }

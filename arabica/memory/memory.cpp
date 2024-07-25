@@ -8,6 +8,7 @@ namespace arabica {
 
 Memory::Memory() {
   clear_cell();
+  init_fonts();
 }
 
 Memory::~Memory() {

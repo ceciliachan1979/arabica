@@ -144,10 +144,10 @@ void Emulator::single_step() {
     // The interpreter compares register Vx to kk,
     // and if they are equal, increments the program counter by 2.
     case OP_CODE::SE_Vx_byte: {
-      const uint8_t vx      = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x       = (cpu.instruction & 0x0F00) >> 8;
       const uint8_t kk_byte = cpu.instruction & 0x00FF;
 
-      if (cpu.registers[vx] == kk_byte) {
+      if (cpu.registers[x] == kk_byte) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -159,10 +159,10 @@ void Emulator::single_step() {
     // The interpreter compares register Vx to kk,
     // and if they are not equal, increments the program counter by 2.
     case OP_CODE::SNE_Vx_byte: {
-      const uint8_t vx      = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x       = (cpu.instruction & 0x0F00) >> 8;
       const uint8_t kk_byte = cpu.instruction & 0x00FF;
 
-      if (cpu.registers[vx] != kk_byte) {
+      if (cpu.registers[x] != kk_byte) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -174,10 +174,10 @@ void Emulator::single_step() {
     // The interpreter compares register Vx to register Vy,
     // and if they are equal, increments the program counter by 2.
     case OP_CODE::SE_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      if (cpu.registers[vx] == cpu.registers[vy]) {
+      if (cpu.registers[x] == cpu.registers[y]) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -188,10 +188,10 @@ void Emulator::single_step() {
     //
     // The interpreter puts the value kk into register Vx.
     case OP_CODE::LD_Vx_byte: {
-      const uint8_t vx      = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x       = (cpu.instruction & 0x0F00) >> 8;
       const uint8_t kk_byte = cpu.instruction & 0x00FF;
 
-      cpu.registers[vx] = kk_byte;
+      cpu.registers[x] = kk_byte;
       cpu.advance_pc();
     } break;
     // 7xkk - ADD Vx, byte
@@ -201,10 +201,10 @@ void Emulator::single_step() {
     // Adds the value kk to the value of register Vx,
     // then stores the result in Vx.
     case OP_CODE::ADD_Vx_byte: {
-      const uint8_t vx      = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x       = (cpu.instruction & 0x0F00) >> 8;
       const uint8_t kk_byte = cpu.instruction & 0x00FF;
 
-      cpu.registers[vx] = cpu.registers[vx] + kk_byte; // it will be wrapped if overflow occurs
+      cpu.registers[x] = cpu.registers[x] + kk_byte; // it will be wrapped if overflow occurs
       cpu.advance_pc();
     } break;
     // 8xy0 - LD Vx, Vy
@@ -213,10 +213,10 @@ void Emulator::single_step() {
     //
     // Stores the value of register Vy in register Vx.
     case OP_CODE::LD_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      cpu.registers[vx] = cpu.registers[vy];
+      cpu.registers[x] = cpu.registers[y];
       cpu.advance_pc();
     } break;
     // 8xy1 - OR Vx, Vy
@@ -227,10 +227,10 @@ void Emulator::single_step() {
     // A bitwise OR compares the corrseponding bits from two values,
     // and if either bit is 1, then the same bit in the result is also 1. Otherwise, it is 0.
     case OP_CODE::OR_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      cpu.registers[vx] |= cpu.registers[vy];
+      cpu.registers[x] |= cpu.registers[y];
       cpu.advance_pc();
     } break;
     // 8xy2 - AND Vx, Vy
@@ -241,10 +241,10 @@ void Emulator::single_step() {
     // A bitwise AND compares the corrseponding bits from two values, and if both bits are 1,
     // then the same bit in the result is also 1. Otherwise, it is 0.
     case OP_CODE::AND_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      cpu.registers[vx] &= cpu.registers[vy];
+      cpu.registers[x] &= cpu.registers[y];
       cpu.advance_pc();
     } break;
     // 8xy3 - XOR Vx, Vy
@@ -255,10 +255,10 @@ void Emulator::single_step() {
     // An exclusive OR compares the corrseponding bits from two values,
     // and if the bits are not both the same, then the corresponding bit in the result is set to 1. Otherwise, it is 0.
     case OP_CODE::XOR_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      cpu.registers[vx] ^= cpu.registers[vy];
+      cpu.registers[x] ^= cpu.registers[y];
       cpu.advance_pc();
     } break;
     // 8xy4 - ADD Vx, Vy
@@ -269,12 +269,12 @@ void Emulator::single_step() {
     // If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, otherwise 0.
     // Only the lowest 8 bits of the result are kept, and stored in Vx.
     case OP_CODE::ADD_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      const uint16_t sum = cpu.registers[vx] + cpu.registers[vy];
+      const uint16_t sum = cpu.registers[x] + cpu.registers[y];
       cpu.registers[0xF] = sum > 255;
-      cpu.registers[vx]  = sum & 0xFF;
+      cpu.registers[x]   = sum & 0xFF;
 
       cpu.advance_pc();
     } break;
@@ -285,11 +285,11 @@ void Emulator::single_step() {
     // If Vx > Vy, then VF is set to 1, otherwise 0.
     // Then Vy is subtracted from Vx, and the results stored in Vx.
     case OP_CODE::SUB_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      cpu.registers[0xF] = cpu.registers[vx] > cpu.registers[vy];
-      cpu.registers[vx]  = cpu.registers[vx] - cpu.registers[vy];
+      cpu.registers[0xF] = cpu.registers[x] > cpu.registers[y];
+      cpu.registers[x]   = cpu.registers[x] - cpu.registers[y];
 
       cpu.advance_pc();
     } break;
@@ -302,10 +302,10 @@ void Emulator::single_step() {
       // Remark: historically, the semantics is "right shift V[x] by V[y] amount
       // and store the result to V[x]" in the original chip8 implementation, however, most of the game
       // after 90s follows the buggy implementation of HP which ignoring V[y], so we just follow the same for now.
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      cpu.registers[0xF] = cpu.registers[vx] & 1;
-      cpu.registers[vx]  = cpu.registers[vx] >> 1;
+      cpu.registers[0xF] = cpu.registers[x] & 1;
+      cpu.registers[x]   = cpu.registers[x] >> 1;
 
       cpu.advance_pc();
     } break;
@@ -316,11 +316,11 @@ void Emulator::single_step() {
     // If Vy > Vx, then VF is set to 1, otherwise 0.
     // Then Vx is subtracted from Vy, and the results stored in Vx.
     case OP_CODE::SUBN_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      cpu.registers[0xF] = cpu.registers[vy] > cpu.registers[vx];
-      cpu.registers[vx]  = cpu.registers[vy] - cpu.registers[vx];
+      cpu.registers[0xF] = cpu.registers[y] > cpu.registers[x];
+      cpu.registers[x]   = cpu.registers[y] - cpu.registers[x];
 
       cpu.advance_pc();
     } break;
@@ -333,10 +333,10 @@ void Emulator::single_step() {
       // Remark: historically, the semantics is "left shift V[x] by V[y] amount
       // and store the result to V[x]" in the original chip8 implementation, however, most of the game
       // after 90s follows the buggy implementation of HP which ignoring V[y], so we just follow the same for now.
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      cpu.registers[0xF] = (cpu.registers[vx] >> 7) & 1;
-      cpu.registers[vx]  = cpu.registers[vx] << 1;
+      cpu.registers[0xF] = (cpu.registers[x] >> 7) & 1;
+      cpu.registers[x]   = cpu.registers[x] << 1;
 
       cpu.advance_pc();
     } break;
@@ -346,10 +346,10 @@ void Emulator::single_step() {
     //
     // The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
     case OP_CODE::SNE_Vx_Vy: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y = (cpu.instruction & 0x00F0) >> 4;
 
-      if (cpu.registers[vx] != cpu.registers[vy]) {
+      if (cpu.registers[x] != cpu.registers[y]) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -381,11 +381,11 @@ void Emulator::single_step() {
     // The interpreter generates a random number from 0 to 255,
     // which is then ANDed with the value kk. The results are stored in Vx.
     case OP_CODE::RND_Vx_byte: {
-      const uint8_t vx        = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x         = (cpu.instruction & 0x0F00) >> 8;
       const uint8_t kk_byte   = (cpu.instruction & 0x00FF);
       const uint8_t rand_byte = random(0, 255);
 
-      cpu.registers[vx] = rand_byte & kk_byte;
+      cpu.registers[x] = rand_byte & kk_byte;
 
       cpu.advance_pc();
     } break;
@@ -395,8 +395,8 @@ void Emulator::single_step() {
     //
     // The value of DT is placed into Vx.
     case OP_CODE::LD_Vx_DT: {
-      const uint8_t vx  = (cpu.instruction & 0x0F00) >> 8;
-      cpu.registers[vx] = delay.get();
+      const uint8_t x  = (cpu.instruction & 0x0F00) >> 8;
+      cpu.registers[x] = delay.get();
       cpu.advance_pc();
     } break;
     // Fx15 - LD DT, Vx
@@ -415,9 +415,9 @@ void Emulator::single_step() {
     //
     // ST is set equal to the value of Vx.
     case OP_CODE::LD_ST_Vx: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      cpu.reg_sound    = cpu.registers[vx];
-      sound.frequency  = cpu.reg_sound;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      cpu.reg_sound   = cpu.registers[x];
+      sound.frequency = cpu.reg_sound;
       if (sound.frequency > 0) {
         sound.start_beep();
       }
@@ -439,11 +439,11 @@ void Emulator::single_step() {
     //
     // All execution stops until a key is pressed, then the value of that key is stored in Vx.
     case OP_CODE::LD_Vx_K: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
       const auto keycode = keypad.get_last_keypressed_code();
       if (keycode != -1) {
-        cpu.registers[vx] = keycode;
+        cpu.registers[x] = keycode;
         cpu.advance_pc();
       }
     } break;
@@ -454,9 +454,9 @@ void Emulator::single_step() {
     // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is
     // increased by 2.
     case OP_CODE::SKP_Vx: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      if (keypad.is_keypressed(cpu.registers[vx])) {
+      if (keypad.is_keypressed(cpu.registers[x])) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -468,9 +468,9 @@ void Emulator::single_step() {
     // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is
     // increased by 2.
     case OP_CODE::SKNP_Vx: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      if (!keypad.is_keypressed(cpu.registers[vx])) {
+      if (!keypad.is_keypressed(cpu.registers[x])) {
         cpu.advance_pc();
       }
       cpu.advance_pc();
@@ -486,15 +486,15 @@ void Emulator::single_step() {
     // If the sprite is positioned so part of it is outside the coordinates of the display,
     // it wraps around to the opposite side of the screen.
     case OP_CODE::DRW_Vx_Vy_nibble: {
-      const uint8_t vx     = (cpu.instruction & 0x0F00) >> 8;
-      const uint8_t vy     = (cpu.instruction & 0x00F0) >> 4;
+      const uint8_t x      = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t y      = (cpu.instruction & 0x00F0) >> 4;
       const uint8_t nibble = cpu.instruction & 0x000F;
 
       std::vector<uint8_t> sprite_data;
       for (int i = 0; i < nibble; ++i) {
         sprite_data.push_back(memory.read(cpu.reg_I + i));
       }
-      cpu.registers[0xF] = display.update(cpu.registers[vx], cpu.registers[vy], sprite_data);
+      cpu.registers[0xF] = display.update(cpu.registers[x], cpu.registers[y], sprite_data);
       display.is_refresh = true;
       cpu.advance_pc();
     } break;
@@ -504,8 +504,8 @@ void Emulator::single_step() {
     //
     // The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
     case OP_CODE::LD_F_Vx: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
-      cpu.reg_I        = cpu.registers[vx] * 0x5;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
+      cpu.reg_I       = cpu.registers[x] * 0x5;
       cpu.advance_pc();
     } break;
     // Fx33 - LD B, Vx
@@ -517,9 +517,9 @@ void Emulator::single_step() {
     // the tens digit at location I + 1,
     // and the ones digit at location I + 2.
     case OP_CODE::LD_B_Vx: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      const auto rx         = cpu.registers[vx];
+      const auto rx         = cpu.registers[x];
       memory[cpu.reg_I + 0] = (rx % 1000) / 100;
       memory[cpu.reg_I + 1] = (rx % 100) / 10;
       memory[cpu.reg_I + 2] = (rx % 10);
@@ -531,9 +531,9 @@ void Emulator::single_step() {
     //
     // The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
     case OP_CODE::LD_I_Vx: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      for (int i = 0; i <= vx; i++) {
+      for (int i = 0; i <= x; i++) {
         memory[cpu.reg_I + i] = cpu.registers[i];
       }
       cpu.advance_pc();
@@ -544,9 +544,9 @@ void Emulator::single_step() {
     //
     // The interpreter reads values from memory starting at location I into registers V0 through Vx.
     case OP_CODE::LD_Vx_I: {
-      const uint8_t vx = (cpu.instruction & 0x0F00) >> 8;
+      const uint8_t x = (cpu.instruction & 0x0F00) >> 8;
 
-      for (int i = 0; i <= vx; i++) {
+      for (int i = 0; i <= x; i++) {
         cpu.registers[i] = memory[cpu.reg_I + i];
       }
       cpu.advance_pc();
